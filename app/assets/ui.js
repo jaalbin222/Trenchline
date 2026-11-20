@@ -55,7 +55,14 @@
   function peopleFor(req) {
     const passed = req.passed || [];
     return req.matches
-      .filter((m) => !m.excluded && m.grade !== "X" && passed.indexOf(m.personId) < 0)
+      .filter((m) => {
+        if (m.excluded || m.grade === "X" || passed.indexOf(m.personId) >= 0) return false;
+        if (m.personId === "ct_self") return true;
+        const who = person(m.personId);
+        if (!who) return false;
+        const blob = (who.role + " " + who.industry + " " + (who.employerType || "")).toLowerCase();
+        return /freight|broker|dispatch|ship|carrier|owner-operator|logistic|truck/.test(blob);
+      })
       .slice(0, 6)
       .map((m) => ({ m, p: person(m.personId) }))
       .filter((x) => x.p);
@@ -104,23 +111,32 @@
   }
 
   function daySlots(p) {
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
+    if (!p || p.id === "ex_sam") return [];
+    const now = new Date();
     const out = [];
-    for (let d = 0; d <= 7; d += 1) {
-      const day = new Date(start.getTime() + d * 86400000);
-      (p.availability || []).forEach((slot) => {
-        const parts = String(slot).split(" ");
-        if (parts[0] !== days[day.getDay()]) return;
-        const hm = (parts[1] || "09:00").split(":");
-        const at = new Date(day.getTime());
-        at.setHours(Number(hm[0]), Number(hm[1]) || 0, 0, 0);
-        if (at.getTime() < Date.now() + 30 * 60000) return;
-        out.push(at);
-      });
+    const seed = String(p.id).split("").reduce((n, c) => n + c.charCodeAt(0), 0);
+    function add(offset, hour, minute) {
+      const at = new Date();
+      at.setDate(at.getDate() + offset);
+      at.setHours(hour, minute || 0, 0, 0);
+      if (at.getTime() > now.getTime() + 20 * 60000) out.push(at);
     }
-    return out;
+    let startH = now.getHours() + 1;
+    if (startH < 15) startH = 15;
+    if (startH <= 17) {
+      add(0, startH, 0);
+      add(0, startH + 2, 0);
+    } else if (startH <= 19) {
+      add(0, startH, 0);
+    }
+    add(1 + (seed % 2), 9 + (seed % 3), 0);
+    const seen = new Set();
+    return out.filter((at) => {
+      const key = at.toISOString();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
   }
 
   function chipLabel(list) {
@@ -334,7 +350,7 @@
         <button type="button" class="${tab === "scheduled" ? "on" : ""}" data-act="stab" data-tab="scheduled">Scheduled (${scheduled.length})</button>
         <button type="button" class="${tab === "done" ? "on" : ""}" data-act="stab" data-tab="done">Completed (${completed.length})</button>
         <button type="button" class="${tab === "declined" ? "on" : ""}" data-act="stab" data-tab="declined">Declined (${declined.length})</button>
-        <label class="check tiny"><input type="checkbox" data-act="onlystar" ${uiState.onlyStar ? "checked" : ""}> Only shortlisted</label>
+        <label class="switch"><input type="checkbox" data-act="onlystar" ${uiState.onlyStar ? "checked" : ""}><span>Only shortlisted</span></label>
         <input id="peopleSearch" type="text" placeholder="Search" value="${esc(uiState.pq || "")}">
       </div>
       ${table}

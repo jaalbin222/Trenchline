@@ -41,21 +41,12 @@
   function pool() {
     const avail = ["Tue 12:00", "Tue 16:00", "Thu 12:00", "Thu 16:30", "Fri 09:00"];
     const people = [
-      ["ex_priya", "Priya N.", "Payroll associate", 2, "2 yrs", "Finance", "Financial services", "Harbor Credit Union", "Regional credit union", "201–1,000", false, "Canada", "email", ["payroll reconciliation", "off-cycle runs", "ledger exceptions"], "Does the payroll-to-ledger tie-out a few times a month.", true],
-      ["ex_marcus", "Marcus T.", "Payroll accountant", 3, "3 yrs", "Finance", "Financial services", "Lakeshore Credit Union", "Regional credit union", "51–200", false, "United States", "linkedin", ["payroll reconciliation", "tax filings", "exceptions"], "Reconciles payroll for a credit union with a few dozen business members.", false],
-      ["ex_sofia", "Sofia M.", "KYC analyst", 2, "1.5 yrs", "Compliance", "Financial services", "Field & Pine Bank", "Retail bank", "1,000+", false, "United States", "email", ["KYC refresh", "periodic review", "evidence chase"], "Works the periodic KYC queue at a retail bank.", false],
-      ["ex_lena", "Lena K.", "Ops analyst", 1, "1 yr", "Operations", "Payments", "Northline Payments", "Payments company", "51–200", false, "Canada", "email", ["merchant onboarding", "KYB", "exceptions"], "Onboards merchants and clears KYB exceptions.", false],
       ["ex_maya", "Maya L.", "Freight coordinator", 3, "3 yrs", "Operations", "Logistics", "Harbor Freight Desk", "Freight brokerage", "51–200", false, "United States", "email", ["carriers", "lanes", "capacity"], "Maya spends her week finding trucks for shippers who already have freight and no carrier. She keeps a short list of carriers who ran a lane before, then calls down the list when a new load appears. Most of the yeses still come back by text.", true],
-      ["ex_sam", "Sam K.", "Carrier sales", 2, "2 yrs", "Sales", "Logistics", "Redlane", "Freight brokerage", "11–50", false, "United States", "email", ["carriers", "new lanes"], "Sam sells capacity for a small brokerage. When a lane is empty he calls carriers he has used, then the ones who asked for freight last month. He writes the rate on a pad before it goes into the system.", false],
       ["ex_noah", "Noah P.", "Dispatcher", 2, "2 yrs", "Operations", "Logistics", "Northline", "Freight brokerage", "51–200", false, "United States", "email", ["cancellations", "loads", "drivers"], "Noah watches the board for loads that fall off in the afternoon. He calls the driver first, then a backup carrier, and notes the new truck on a sheet until morning dispatch. A cancellation after 3pm usually means the load sits overnight.", false],
       ["ex_elena", "Elena V.", "Shipping manager", 4, "4 yrs", "Operations", "Logistics", "Fieldstone Goods", "Shipper", "201–1,000", false, "United States", "email", ["quotes", "lanes", "brokers"], "Elena moves freight for a shipper with a few dozen lanes. She asks two or three brokers for a quote and compares them in a spreadsheet. She does not trust a rate that leaves out the extra fees.", false],
-      ["ex_dev", "Dev R.", "Accountant", 2, "2 yrs", "Finance", "Accounting", "Hart & Co.", "Accounting firm", "11–50", false, "Canada", "linkedin", ["month-end close", "bank recs", "client chase"], "Closes the books for small business clients.", false],
-      ["ex_luis", "Luis G.", "Chargeback analyst", 4, "4 yrs", "Operations", "Fintech", "Pebble Neobank", "Neobank", "201–1,000", false, "United States", "email", ["chargebacks", "disputes", "evidence"], "Handles card disputes at a neobank.", false],
-      ["ex_nina", "Nina V.", "Finance ops intern", 0.5, "<1 yr", "Finance", "Software", "Paperlane", "B2B SaaS", "11–50", false, "Canada", "linkedin", ["invoices", "collections", "CRM"], "Spent a co-op in finance ops at a software company.", false],
-      ["ex_hana", "Hana S.", "AP coordinator", 1, "1 yr", "Finance", "Manufacturing", "Brightmill", "Mid-market manufacturer", "201–1,000", false, "United States", "email", ["accounts payable", "PO match", "vendor setup"], "Matches invoices to POs at a manufacturer. Horizontal example, not fintech.", false],
-      ["ex_owen", "Owen P.", "Payments operations manager", 9, "9 yrs", "Operations", "Payments", "Relay Bank", "Bank", "1,000+", false, "United States", "linkedin", ["wires", "ACH", "ops reviews"], "Runs a payments ops team. Senior supply, allowed, not the core.", false],
-      ["ex_chris", "Chris A.", "Controller", 12, "12 yrs", "Finance", "Financial services", "Northwind Bancorp", "Regional bank", "1,000+", false, "United States", "email", ["close", "controls", "audit"], "Owns the close. An executive profile, included to show seniority is allowed and usually a weak fit.", false],
-      ["ex_jordan", "Jordan P.", "Payroll specialist", 2, "2 yrs", "Finance", "Financial services", "MegaBank National", "National bank", "1,000+", false, "United States", "linkedin", ["payroll", "reconciliations", "funding"], "Would match a payroll brief, and is blocked when MegaBank National is on the do-not-contact list.", false],
+      ["ex_sam", "Sam K.", "Carrier sales", 2, "2 yrs", "Sales", "Logistics", "Redlane", "Carrier", "11–50", false, "United States", "email", ["carriers", "new lanes"], "Sam sells capacity for a small fleet. When a lane is empty he calls brokers he has used, then the ones who asked for trucks last month. He writes the rate on a pad before it goes into the system.", false],
+      ["ex_dee", "Dee H.", "Owner-operator", 6, "6 yrs", "Operations", "Logistics", "Dee H. Trucking", "Owner-operator", "1–10", false, "United States", "email", ["lanes", "truck", "appointments"], "Dee runs one truck and picks loads that get her home by Friday. She books her own appointments and will not take a pickup that sits her overnight without pay.", false],
+      ["ex_brooks", "Brooks A.", "Broker", 5, "5 yrs", "Operations", "Logistics", "Field Lane", "Freight brokerage", "11–50", false, "United States", "email", ["carriers", "quotes", "lanes"], "Brooks covers a book of regular shippers and a few spot loads. He keeps three carriers per lane so a no-show does not leave freight on the dock.", false],
     ];
     return people.map((p) => ({
       id: p[0],
@@ -206,6 +197,16 @@
         "The first broker took half a day to say the truck fell off. I had already told the warehouse to stage the freight.",
         "I lined the two rates up with the fuel and the lumper fee, because the emails never list those the same way.",
       ],
+      ex_dee: [
+        "I was empty in Memphis on Wednesday and took a broker's call for a Dallas pickup the next morning. I only said yes after I checked the miles against getting home Friday.",
+        "He could not tell me the live-load or drop-hook until I asked twice. That is what held it up.",
+        "I wrote the appointment and the rate on the back of the fuel receipt until I put it in my phone.",
+      ],
+      ex_brooks: [
+        "A regular shipper added a lane, Kansas City to Charlotte, with no carrier on it. I called the three trucks that ran it for me last spring.",
+        "One was in the shop. The other two wanted to see the commodity before they priced it, so the morning went to photos of the freight.",
+        "I still list who I called and what they said on a pad. The system only gets the one who says yes.",
+      ],
     },
     req_cancel: {
       ex_maya: [
@@ -228,6 +229,16 @@
         "I called the broker back and asked who else they had within two hours, then I called the warehouse to hold the dock.",
         "I track the recovery on a sheet: old carrier, new carrier, and whether the delivery day moved. The email thread gets too long.",
       ],
+      ex_dee: [
+        "I had accepted a Friday load and the broker cancelled while I was fueling. The trailer was already half loaded with their freight.",
+        "I called the broker, not a dispatcher. It was his load and he needed to say where it should sit.",
+        "I noted the cancellation in my log book with the time, so I can show I did not no-show.",
+      ],
+      ex_brooks: [
+        "A truck cancelled at 2pm on a load that had to deliver the next morning. The driver said he was over hours in Nashville.",
+        "I called a carrier who had asked me that morning for anything headed north.",
+        "I moved the load to the top of my notepad and left the old truck number crossed out until the new one was confirmed.",
+      ],
     },
     req_quotes: {
       ex_maya: [
@@ -249,6 +260,16 @@
         "I asked three brokers for a Tuesday load from our Ohio plant to a store in Charlotte. It had to be there before Friday noon.",
         "One quote was $400 under the others and did not say if the liftgate was included. When I asked, they added it back and the gap disappeared.",
         "I put the three quotes in a sheet with the pickup date, the transit days, and every fee they named. Otherwise I am comparing a headline rate to a real one.",
+      ],
+      ex_dee: [
+        "A broker texted me a rate for a drop in Little Rock. I asked him to put the detention and the layover on the same text before I answered.",
+        "The first number had no fuel. When he added it, the load was not worth the miles.",
+        "I compare miles, rate, and how long I sit by writing three lines in my notebook. I do not trust the first text.",
+      ],
+      ex_brooks: [
+        "A shipper wanted a number for two pickups, same day, different docks in Dallas. I priced each truck separately and sent both.",
+        "They compared me to a rate that was a day later. Same cities, different service. I had to spell that out.",
+        "I keep a sheet of what I quoted, when, and which fees I included. The email alone is not enough when they call back.",
       ],
     },
   };
@@ -575,7 +596,7 @@
     [freight, cancel, quotes].forEach((req) => fillAnswers(req, people));
 
     const state = {
-      version: 5,
+      version: 6,
       session: { role: "buyer", forceOnboarding: false },
       buyer: buyer,
       expertId: "ex_maya",
@@ -621,7 +642,7 @@
     if (!raw) return persist(seed());
     try {
       const state = JSON.parse(raw);
-      if (!state || state.version !== 5 || !state.buyer || !state.pool) return persist(seed());
+      if (!state || state.version !== 6 || !state.buyer || !state.pool) return persist(seed());
       cached = state;
       return expire(state);
     } catch (e) {
