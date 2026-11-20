@@ -437,29 +437,3 @@ footer{border-top:1px solid var(--line2);padding:56px 0 40px}
 
 /* one-switch removal of all illustrative social proof (see SHOW_PLACEHOLDERS in app.js) */
 .no-placeholders [data-placeholder]{display:none!important}
-
-.mono{font-family:var(--mono)}
-.hero h1.tagline{font-size:76px;max-width:1040px}
-.cmp{margin-top:28px;overflow-x:auto;border:1px solid var(--line);border-radius:24px;background:var(--card)}
-.cmp table{width:100%;border-collapse:collapse;min-width:760px}
-.cmp th,.cmp td{text-align:left;padding:16px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14.5px;font-weight:450}
-.cmp thead th{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);font-weight:500}
-.cmp td.us,.cmp th.us{background:#f4faf7}
-.cmp thead th.us{color:var(--g)}
-.cmp tbody th{font-weight:620;width:148px}
-.cmp td span{display:block;color:var(--mu);font-size:12.5px;margin-top:4px}
-.cmp caption{caption-side:bottom;text-align:left;padding:14px 18px 16px;color:var(--mu2);font-size:12.5px;line-height:1.55}
-.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
-.vcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;text-align:left}
-.vcard h3{font-size:20px;letter-spacing:-.03em;margin-top:8px}
-.vcard p{color:var(--mu);margin-top:8px;font-size:14.5px}
-.open-card{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 40px 80px -50px rgba(21,21,19,.4)}
-.open-card ol{margin:14px 0 0 18px}
-.open-card li{margin:8px 0;color:var(--ink2)}
-@media (max-width:1080px){
-  .hero h1.tagline{font-size:60px}
-}
-@media (max-width:860px){
-  .hero h1.tagline{font-size:40px}
-  .vgrid{grid-template-columns:1fr}
-}
