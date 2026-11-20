@@ -52,10 +52,9 @@
       .filter((x) => x.p);
   }
 
-  function why(m, p) {
-    const line = (m.reasons || []).find((r) => !/example profile/i.test(r)) || "";
-    const text = p.role + ", " + p.yearsLabel + (line ? ". " + line : "");
-    return text.length > 160 ? text.slice(0, 157) + "…" : text;
+  function why(p) {
+    const tense = p.former ? "Previously " : "";
+    return tense + p.role + ", " + p.yearsLabel + (p.employerType ? " · " + p.employerType : "");
   }
 
   function inviteState(req, personId) {
@@ -112,7 +111,7 @@
       if (booking && booking.status === "confirmed") action = `<a class="btn secondary" href="call.html?booking=${esc(booking.id)}">Scheduled</a>`;
       else if (booking) action = `<span class="ex">Already spoke</span>`;
       else if (inv && inv.status === "pending") action = `<span class="ex">Waiting for them to accept</span>`;
-      return `<article class="card"><div class="person"><div class="init">${esc(initials(p.name))}</div><div><h2>${esc(p.name)} ${p.example ? '<span class="ex">Example</span>' : ""}</h2><p class="role">${esc(p.role)}${p.former ? ", previously" : ""}</p><p class="why">${esc(why(m, p))}</p></div><div class="actions">${action}</div></div></article>`;
+      return `<article class="card"><div class="person"><div class="init">${esc(initials(p.name))}</div><div><h2>${esc(p.name)} ${p.example ? '<span class="ex">Example</span>' : ""}</h2><p class="role">${esc(why(p))}</p></div><div class="actions">${action}</div></div></article>`;
     }).join("");
     const calls = state.bookings.filter((b) => b.requestId === req.id);
     const upcoming = calls.filter((b) => b.status === "confirmed").map((b) => {
@@ -127,7 +126,7 @@
     const top = peopleFor(req)[0];
     const parker = top ? `Parker: I’d start with ${top.p.name.split(" ")[0]}. ${top.p.role}, ${top.p.yearsLabel}.` : "Parker hasn’t found anyone for this yet.";
     return `<a class="back" href="index.html">Projects</a>
-      <div class="rowhead"><div><h1>${esc(req.title)} ${req.example ? '<span class="ex">Example</span>' : ""}</h1><p class="sub">${esc(req.decision)}</p></div>
+      <div class="rowhead"><div><h1>${esc(req.title)} ${req.example ? '<span class="ex">Example</span>' : ""}</h1>${req.decision && req.decision !== req.title ? `<p class="sub">${esc(req.decision)}</p>` : ""}</div>
       <a class="btn" href="request-new.html">Request a new call</a></div>
       <div class="msg"><b>Parker</b><p>${esc(parker)}</p></div>
       <section class="section"><h2>People to talk to</h2>${people || "<p class='sub'>No one yet.</p>"}</section>
