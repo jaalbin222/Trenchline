@@ -1,0 +1,16 @@
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:28px;max-width:1100px;margin:0 auto;padding:32px 32px 72px}
+.top{display:flex;justify-content:space-between;align-items:center;grid-column:1/-1}
+h1{font-size:72px;max-width:14ch;margin-top:16px}
+h1 .up{font-size:22px;margin-bottom:10px}
+.lead{margin-top:16px;font-size:18px;color:var(--mu);max-width:46ch}
+.btn{margin-top:22px}
+.calls{margin-top:28px;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.pc{width:250px}
+.pc.a{transform:rotate(-2.5deg)}
+.pc.b{transform:rotate(2.2deg);margin-top:18px}
+.side{display:flex;flex-direction:column;gap:16px;padding-top:8px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 24px 50px -32px rgba(21,21,19,.35)}
+.panel .who{display:flex;gap:8px;align-items:center;font-weight:620}
+.panel p{margin-top:8px;font-size:14.5px}
+.ok{font-family:var(--serif);font-style:italic;font-size:28px;margin-top:18px}
+@media(max-width:900px){.stage{grid-template-columns:1fr;padding:20px}h1{font-size:48px}}

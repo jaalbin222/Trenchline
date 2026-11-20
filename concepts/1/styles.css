@@ -1,0 +1,17 @@
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:36px;max-width:1180px;margin:0 auto;padding:28px 32px 64px}
+.top{display:flex;justify-content:space-between;align-items:center;grid-column:1 / -1}
+h1{font-size:68px;margin:18px 0 10px;max-width:12ch}
+h1 .up{font-size:42px;line-height:1}
+.sub{color:var(--mu);font-size:17px;max-width:46ch}
+.msg{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;margin-top:16px;box-shadow:0 24px 50px -32px rgba(21,21,19,.35)}
+.msg .who{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
+.msg .who span{font-weight:450;color:var(--mu);font-size:13px}
+.msg p{margin-top:10px;font-size:16.5px}
+.next{margin-top:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.next .mu{font-size:14px}
+.booked{font-family:var(--serif);font-style:italic;font-size:32px;line-height:1.15}
+.rail{display:flex;flex-direction:column;gap:16px;padding-top:74px}
+.pc.a{transform:rotate(-2.5deg)}
+.pc.b{transform:rotate(2deg);margin-left:18px}
+.past{font-size:14px;color:var(--mu);padding:0 8px}
+@media(max-width:900px){.stage{grid-template-columns:1fr;padding:20px}h1{font-size:48px}.rail{padding-top:0}}

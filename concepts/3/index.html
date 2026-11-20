@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minute — what the calls are saying</title>
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../skin.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="loaded">
+<a class="skip" href="#main">Skip to the note</a>
+<div class="bg-lines" aria-hidden="true"></div>
+<div class="stage">
+  <header class="top">
+    <a class="brand" href="../index.html"><img src="../../assets/logo.svg" alt="" width="28" height="28">Minute</a>
+    <span class="kick">The note comes first</span>
+  </header>
+  <article id="main">
+    <p class="eyebrow">From two calls</p>
+    <h1><span class="up">What we’re learning</span>about the <mark class="hl">pennies.</mark></h1>
+    <p class="lead">Priya re-keys them by hand, after the ledger is closed. Marcus keeps a side list and leaves the books open an extra day. Same gap. Different clock. One more call, or you decide.</p>
+    <button class="btn btn-p" type="button" id="book">Book Priya · Tuesday 12:00</button>
+    <p class="ok" id="ok" hidden>Booked. Tuesday at 12:00 with Priya.</p>
+    <div class="calls">
+      <article class="pc a">
+        <div class="top"><div class="av" style="background:#e3efe8;color:#0f5f46">PN</div><div><h4>Priya N.</h4><p>Tuesday · 12:00</p></div></div>
+        <p style="margin-top:10px">“I re-key the difference. The ledger is already closed.”</p>
+        <div class="meta"><span>Next</span><b data-price>$50</b></div>
+      </article>
+      <article class="pc b">
+        <div class="top"><div class="av" style="background:#e6e3f7;color:#3a2f8a">MT</div><div><h4>Marcus T.</h4><p>Last week · example</p></div></div>
+        <p style="margin-top:10px">“A side list of pennies until the next cycle.”</p>
+        <div class="meta"><span>Done</span><b data-price>$50</b></div>
+      </article>
+    </div>
+  </article>
+  <aside class="side" aria-label="Parker">
+    <div class="panel">
+      <div class="who"><span class="av" style="background:#ffe36e;color:#151513;width:32px;height:32px;font-size:12px">P</span>Parker</div>
+      <p>Tuesday at 12 is open. Answer here, or reply to the email. Same thread.</p>
+      <p class="mu">You asked whether to build the tool, or drop it.</p>
+    </div>
+    <div class="ledger">
+      <h5>The call</h5>
+      <div class="row"><span>30 minutes</span><span>with Priya</span></div>
+      <div class="row us"><span>You pay</span><span data-price>$50</span></div>
+    </div>
+  </aside>
+</div>
+<script src="../../app/assets/config.js"></script>
+<script>
+(function () {
+  var n = window.TL && TL.CONFIG ? TL.CONFIG.pricePerCallUsd : 50;
+  document.querySelectorAll("[data-price]").forEach(function (el) { el.textContent = "$" + n; });
+  document.getElementById("book").addEventListener("click", function () {
+    this.hidden = true;
+    document.getElementById("ok").hidden = false;
+  });
+})();
+</script>
+</body>
+</html>

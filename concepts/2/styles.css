@@ -1,0 +1,16 @@
+.stage{max-width:1180px;margin:0 auto;padding:28px 40px 72px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) 340px;gap:48px;align-items:start;margin-top:28px}
+h1{font-size:84px}
+h1 .up{font-size:28px;margin-bottom:8px}
+.sub{margin-top:16px;font-size:18px;color:var(--mu);max-width:42ch}
+.actions{display:flex;align-items:center;gap:16px;margin-top:26px;flex-wrap:wrap}
+.hint{color:var(--mu);font-size:14px}
+.stack{display:flex;flex-direction:column;gap:18px;padding-top:36px}
+.pc.tilt{transform:rotate(-3deg)}
+.pc.tilt2{transform:rotate(2.4deg);margin-left:28px}
+.drawer{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 18px;box-shadow:0 24px 50px -32px rgba(21,21,19,.4);transform:rotate(1.5deg)}
+.drawer .who{display:flex;align-items:center;gap:8px;font-weight:620;font-size:14px}
+.drawer p{margin-top:8px;font-size:14.5px}
+.text{background:none;border:0;padding:0;margin-top:10px;text-decoration:underline;text-underline-offset:3px;font-weight:550}
+@media(max-width:900px){.grid{grid-template-columns:1fr}h1{font-size:56px}.stage{padding:20px}}

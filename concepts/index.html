@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Three ways in — Trenchline</title>
+<meta name="description" content="Same Parker, three layouts. Pick the one that is easiest.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="skin.css">
+<link rel="stylesheet" href="index.css">
+</head>
+<body class="loaded">
+<a class="skip" href="#vote">Skip to the three</a>
+<div class="bg-lines" aria-hidden="true"></div>
+<div class="stage">
+  <header class="top">
+    <a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="" width="28" height="28">Trenchline</a>
+    <span class="kick">Pick one</span>
+  </header>
+  <h1 id="vote"><span class="up">Same person. Three rooms.</span><mark class="hl">Which is easiest?</mark></h1>
+  <p class="lede">Parker writes, suggests two people, and books the call. You can answer him here or by email. You don’t configure anything. <span data-price>$50</span> for half an hour. These are examples. Nothing is sent.</p>
+  <div class="grid">
+    <article class="study">
+      <a class="shot" href="1/"><img src="previews/ellis.png" alt="Ellis: a thread with Parker, and the two calls in a rail of cards"></a>
+      <p class="eyebrow">01 · Thread</p>
+      <h2>Ellis</h2>
+      <p>The conversation is the page. The calls sit beside it. One button books both.</p>
+      <a class="btn btn-p" href="1/">Open Ellis</a>
+    </article>
+    <article class="study">
+      <a class="shot" href="2/"><img src="previews/agenda.png" alt="Agenda: Tuesday at 12:00 with Priya, cards to the right, Parker in a note"></a>
+      <p class="eyebrow">02 · Calls</p>
+      <h2>Agenda</h2>
+      <p>The next call is the page. Parker stays in a note until you want him.</p>
+      <a class="btn btn-p" href="2/">Open Agenda</a>
+    </article>
+    <article class="study">
+      <a class="shot" href="3/"><img src="previews/minute.png" alt="Minute: a short note about the pennies, call cards, Parker in a side panel"></a>
+      <p class="eyebrow">03 · Note</p>
+      <h2>Minute</h2>
+      <p>The note leads. The calls are the evidence under it. Parker is a small panel.</p>
+      <a class="btn btn-p" href="3/">Open Minute</a>
+    </article>
+  </div>
+</div>
+<script src="../app/assets/config.js"></script>
+<script>
+(function () {
+  var n = window.TL && TL.CONFIG ? TL.CONFIG.pricePerCallUsd : 50;
+  document.querySelectorAll("[data-price]").forEach(function (el) { el.textContent = "$" + n; });
+})();
+</script>
+</body>
+</html>

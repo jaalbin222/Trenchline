@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ellis — book the calls Parker found</title>
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../skin.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="loaded">
+<a class="skip" href="#main">Skip to the conversation</a>
+<div class="bg-lines" aria-hidden="true"></div>
+<div class="stage">
+  <header class="top">
+    <a class="brand" href="../index.html"><img src="../../assets/logo.svg" alt="" width="28" height="28">Ellis</a>
+    <span class="kick"><i style="width:6px;height:6px;border-radius:50%;background:#0f5f46"></i>Same thread as email</span>
+  </header>
+  <main id="main">
+    <p class="eyebrow">Parker</p>
+    <h1><span class="up">Parker found two people.</span><mark class="hl">Book them.</mark></h1>
+    <p class="sub">Reply here, or to his email. It’s one conversation. He won’t contact anyone until you do.</p>
+    <article class="msg">
+      <div class="who"><span class="av" style="background:#ffe36e;color:#151513;width:32px;height:32px;font-size:13px">P</span>Parker <span>your project manager</span></div>
+      <p>Priya has done payroll tie-outs at a credit union for two years. She still re-keys the pennies herself. Tuesday at 12.</p>
+      <p>Lena is a year into the neighboring work, merchant files. Thursday at 4:30, if you want that too.</p>
+      <p>Half an hour each, <b data-price>$50</b>.</p>
+    </article>
+    <div class="next" id="next">
+      <button class="btn btn-p" type="button" id="book">Book Priya and Lena</button>
+      <p class="mu">That’s the only step.</p>
+    </div>
+  </main>
+  <aside class="rail" aria-label="Your calls">
+    <p class="fine">Your calls</p>
+    <article class="pc a" id="c1">
+      <div class="top"><div class="av" style="background:#e3efe8;color:#0f5f46">PN</div><div><h4>Priya N.</h4><p>2 yrs · credit union</p></div></div>
+      <div class="topics"><span>Payroll</span><span>Tuesday</span></div>
+      <div class="meta"><span>30 min</span><b data-price>$50</b></div>
+    </article>
+    <article class="pc b" id="c2">
+      <div class="top"><div class="av" style="background:#ffe9b8;color:#7a5200">LK</div><div><h4>Lena K.</h4><p>1 yr · payments</p></div></div>
+      <div class="topics"><span>Files</span><span>Thursday</span></div>
+      <div class="meta"><span>30 min</span><b data-price>$50</b></div>
+    </article>
+    <div class="ledger">
+      <h5>This booking</h5>
+      <div class="row"><span>Two calls</span><span data-two>$100</span></div>
+      <div class="row us"><span>Each</span><span data-price>$50</span></div>
+    </div>
+    <p class="past"><span class="fine">Example</span><br>Last week with Marcus. The pennies, re-keyed by hand.</p>
+  </aside>
+</div>
+<script src="../../app/assets/config.js"></script>
+<script>
+(function () {
+  var n = window.TL && TL.CONFIG ? TL.CONFIG.pricePerCallUsd : 50;
+  document.querySelectorAll("[data-price]").forEach(function (el) { el.textContent = "$" + n; });
+  document.querySelectorAll("[data-two]").forEach(function (el) { el.textContent = "$" + (n * 2); });
+  document.getElementById("book").addEventListener("click", function () {
+    document.getElementById("next").innerHTML = '<p class="booked">Booked. Tuesday with Priya, Thursday with Lena.</p>';
+    document.getElementById("c1").querySelector(".meta span").textContent = "Booked";
+    document.getElementById("c2").querySelector(".meta span").textContent = "Booked";
+  });
+})();
+</script>
+</body>
+</html>

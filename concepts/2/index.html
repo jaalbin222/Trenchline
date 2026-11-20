@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agenda — your next call</title>
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../skin.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="loaded">
+<a class="skip" href="#main">Skip to the call</a>
+<div class="bg-lines" aria-hidden="true"></div>
+<div class="stage">
+  <header class="top">
+    <a class="brand" href="../index.html"><img src="../../assets/logo.svg" alt="" width="28" height="28">Agenda</a>
+    <span class="kick">Calls first</span>
+  </header>
+  <div class="grid">
+    <main id="main">
+      <p class="eyebrow">Next</p>
+      <h1><span class="up">Tuesday at 12:00</span>with <mark class="hl">Priya.</mark></h1>
+      <p class="sub">Half an hour on payroll. She still does the tie-out herself. Parker already asked her.</p>
+      <div class="actions">
+        <button class="btn btn-p" type="button" id="book">Book Tuesday with Priya</button>
+        <p class="hint" id="hint"><span data-price>$50</span> · one tap</p>
+      </div>
+      <article class="drawer" style="margin-top:36px;max-width:460px" aria-label="Parker">
+        <div class="who"><span class="av" style="background:#ffe36e;color:#151513;width:32px;height:32px;font-size:12px">P</span>Parker</div>
+        <p>Lena can do Thursday at 4:30 if you want a second view. Say so here, or reply to the email. Same conversation.</p>
+        <p class="fine" style="margin-top:10px">parker@trenchline.example</p>
+      </article>
+    </main>
+    <div class="stack">
+      <article class="pc tilt">
+        <div class="top"><div class="av" style="background:#e3efe8;color:#0f5f46">PN</div><div><h4>Priya N.</h4><p>2 yrs · credit union</p></div></div>
+        <div class="topics"><span>Payroll</span><span>Pennies</span></div>
+        <div class="meta"><span>Tue 12:00</span><b data-price>$50</b></div>
+      </article>
+      <article class="pc tilt2">
+        <div class="top"><div class="av" style="background:#e6e3f7;color:#3a2f8a">MT</div><div><h4>Marcus T.</h4><p>Last week · example</p></div></div>
+        <p style="margin-top:10px">“A side list of pennies until the next cycle.”</p>
+        <button class="text" type="button" id="another">Book another like this</button>
+      </article>
+      <div class="ledger" style="transform:rotate(-1deg)">
+        <h5>One call</h5>
+        <div class="row"><span>30 minutes</span><span>flat</span></div>
+        <div class="row us"><span>Trenchline</span><span data-price>$50</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../../app/assets/config.js"></script>
+<script>
+(function () {
+  var n = window.TL && TL.CONFIG ? TL.CONFIG.pricePerCallUsd : 50;
+  document.querySelectorAll("[data-price]").forEach(function (el) { el.textContent = "$" + n; });
+  document.getElementById("book").addEventListener("click", function () {
+    this.textContent = "Booked";
+    document.getElementById("hint").textContent = "Tuesday, 12:00, Priya. That’s it.";
+  });
+  document.getElementById("another").addEventListener("click", function () {
+    this.textContent = "Parker will find someone like Marcus.";
+  });
+})();
+</script>
+</body>
+</html>
