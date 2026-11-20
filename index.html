@@ -3,23 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Trenchline — talk to the people who do the work</title>
-<meta name="description" content="Customer discovery for pre-seed and seed founders. Type a question, then talk to people who do the work. $50 for 30 minutes.">
+<title>Trenchline: customer discovery from the people in the trenches</title>
+<meta name="description" content="Customer discovery for pre-seed and seed founders. Talk to the people who actually do the work. Fast and affordable. $50 for a 30-minute call.">
 <meta name="theme-color" content="#f6f3ec">
-<meta property="og:title" content="Trenchline — what do you want to understand?">
-<meta property="og:description" content="Talk to the people who actually do the work. Fast and affordable.">
+<meta property="og:title" content="Trenchline: talk to the people who actually do the work">
+<meta property="og:description" content="For pre-seed and seed founders. A 30-minute call with someone who does the work. Fast and affordable.">
 <meta property="og:type" content="website">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<div class="veil" id="veil" aria-hidden="true"></div>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="bg-lines" aria-hidden="true"></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3.2 3L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-star" viewBox="0 0 20 20"><path fill="currentColor" d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 16 16" fill="none"><path d="M6 3h7v7M13 3L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1.2-3.5 4-5 7-5s5.8 1.5 7 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none"><rect x="5" y="10.5" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V8a4 4 0 018 0v2.5" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none"><path d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v7a2.5 2.5 0 01-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 014 14.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cash" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-cv" viewBox="0 0 24 24" fill="none"><path d="M7 3h7l4 4v14H7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 12h5M10 16h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
 </svg>
 
 <header class="nav" id="nav">
@@ -29,8 +39,7 @@
       trenchline
     </a>
     <nav class="links" aria-label="Primary">
-      <a href="#how">How it works</a>
-      <a href="#pricing">Pricing</a>
+      <a href="#problem">Why</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#juniors">Take calls</a><a href="#trust">Trust</a><a href="#faq">FAQ</a>
     </nav>
     <div class="nav-r">
       <a class="btn btn-p btn-sm" href="app/">Open the app</a>
@@ -38,8 +47,7 @@
     </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#how">How it works</a>
-    <a href="#pricing">Pricing</a>
+    <a href="#problem">Why</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#juniors">Take calls</a><a href="#trust">Trust</a><a href="#faq">FAQ</a>
     <a class="btn btn-p" href="app/">Open the app</a>
   </div>
 </header>
@@ -48,111 +56,352 @@
 <section class="hero" id="top">
   <div class="wrap">
     <span class="kick"><i></i>For pre-seed and seed founders</span>
-    <h1><span class="up">What do you want to</span><br><mark class="hl">understand?</mark></h1>
-    <p class="sub">Talk to the people who actually do the work. Fast, and affordable.</p>
-    <div class="ask-wrap">
-      <form class="askbox" id="ask" action="app/" method="get">
-        <label class="sr" for="q">Your question</label>
-        <input id="q" name="q" type="text" autocomplete="off" autocapitalize="sentences" enterkeyhint="search" spellcheck="false" placeholder="How do small credit unions handle chargebacks?" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggest">
-        <button class="btn btn-p" type="submit">Ask</button>
-        <div class="suggest" id="suggest" role="listbox" hidden></div>
-      </form>
+    <h1><span class="up">Customer discovery,</span><br>from the people <mark class="hl">in the trenches.</mark></h1>
+    <p class="sub">Talk to the people who actually do the work. Fast, and affordable. A <b data-bind="price">$50</b> call, 30 minutes, with someone in the job.</p>
+    <div class="ctas">
+      <a class="btn btn-p" href="app/" data-path="founder">Open the app <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
+      <a class="btn btn-g" href="app/inbox.html" data-path="junior">I want to take calls</a>
     </div>
-    <div class="chips" aria-label="Topics">
-      <button type="button" data-fill="How do small credit unions handle chargebacks?">Fintech</button>
-      <button type="button" data-fill="How do dental clinics pick scheduling software?">Healthcare</button>
-      <button type="button" data-fill="How do freight brokers find new carriers?">Logistics</button>
-      <button type="button" data-fill="How do shop managers handle returns?">Retail</button>
-      <button type="button" data-fill="How do small software teams onboard a new customer?">SaaS</button>
-      <button type="button" data-fill="How do site crews track the day's work?">Construction</button>
+    <div class="hero-fine">
+      <span><svg><use href="#i-check"/></svg>People who do the work</span>
+      <span><svg><use href="#i-check"/></svg>Fast to book</span>
+      <span><svg><use href="#i-check"/></svg>Nothing confidential, ever</span>
+    </div>
+    <div class="fan" aria-label="Example calls">
+      <div class="pc p1"><div class="top"><div class="av" style="background:#e3efe8;color:#0f5f46">SE</div><div><h4>Site engineer</h4><p>1 yr · commercial construction</p></div></div><div class="topics"><span>Site notes</span><span>Daily reports</span></div><div class="meta"><span>30 min</span><b data-bind="price">$50</b></div></div>
+      <div class="pc p2"><div class="top"><div class="av" style="background:#ffe9b8;color:#7a5200">RO</div><div><h4>Revenue ops</h4><p>1 yr · B2B software</p></div></div><div class="topics"><span>Lead routing</span><span>The pipeline</span></div><div class="meta"><span>30 min</span><b data-bind="price">$50</b></div></div>
+      <div class="pc p3"><div class="top"><div class="av" style="background:#e6e3f7;color:#3a2f8a">PT</div><div><h4>Pharmacy technician</h4><p>3 yrs · retail pharmacy</p></div></div><div class="topics"><span>Refills</span><span>Insurance rejects</span></div><div class="meta"><span>30 min</span><b data-bind="price">$50</b></div></div>
+      <div class="pc p4"><div class="ledger"><h5>A 30-min call</h5><div class="row"><span>Someone in the job</span><span>Yes</span></div><div class="row"><span>Notes after</span><span>Yes</span></div><div class="row us"><span>Trenchline</span><span data-bind="price">$50</span></div></div></div>
+    </div>
+    <p class="fan-note">Example roles · a call is 30 minutes</p>
+  </div>
+</section>
+
+<section class="strip" aria-label="Kinds of work">
+  <div class="wrap">
+    <div class="strip-h rv">For founders learning work like</div>
+  </div>
+  <div class="marquee rv d1"><div class="marquee-in" id="logos"></div></div>
+</section>
+
+<section class="sec" id="problem">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow rv">The problem</span>
+      <h2 class="h2 rv d1">Customer discovery is <em>hard</em> when you are just starting.</h2>
+      <p class="lead rv d2">Cold notes get ignored. Friends tell you what you want to hear. The people who do the work are the ones who know how the job actually gets done.</p>
+    </div>
+    <div class="quotes">
+      <figure class="q wide dark rv">
+        <blockquote>Most notes I send get ignored. I cannot get the person who does the work to talk to me.</blockquote>
+        <figcaption class="src"><span class="sub-r">The stuck part</span><a href="#how">How it works <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv d1">
+        <blockquote>I sent a lot of emails and got nothing back.</blockquote>
+        <figcaption class="src"><span class="sub-r">Outreach</span><a href="#how">How it works <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv">
+        <blockquote>People I knew said yes, this is a problem. People I didn't know said no.</blockquote>
+        <figcaption class="src"><span class="sub-r">Friends</span><a href="#trust">Trust <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv d1">
+        <blockquote>Even when I offered to pay, almost no one wrote back.</blockquote>
+        <figcaption class="src"><span class="sub-r">Getting a reply</span><a href="#pricing">Pricing <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv d2">
+        <blockquote>The calls I could find were priced for a big company, not a founder just starting out.</blockquote>
+        <figcaption class="src"><span class="sub-r">The price</span><a href="#pricing">Pricing <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q wide rv">
+        <blockquote>Everyone said they loved the idea. Nobody told me how the work actually gets done.</blockquote>
+        <figcaption class="src"><span class="sub-r">Polite answers</span><a href="#how">How it works <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv d1">
+        <blockquote>The hard part is still the same: a short call with someone who does the job.</blockquote>
+        <figcaption class="src"><span class="sub-r">The call</span><a href="#juniors">Take calls <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+    </div>
+    <div class="insight">
+      <div class="ins rv"><span class="n">01</span><div><b>Getting the call is the hard part.</b>The questions are easy. A person who does the work, on the phone, is not.</div></div>
+      <div class="ins rv d1"><span class="n">02</span><div><b>Friends are kind.</b>Someone who does the job, and is paid to show up, will tell you what happens.</div></div>
+      <div class="ins rv d2"><span class="n">03</span><div><b>Ask the person in the work.</b>They know the steps. A 30-minute call is enough to hear them.</div></div>
     </div>
   </div>
 </section>
 
-<section class="band" id="questions">
+<section class="sec how" id="how">
   <div class="wrap">
-    <h2 class="h2 center">Ask people who do the work</h2>
-    <div class="qgrid">
-      <button type="button" data-fill="How do pharmacy techs deal with insurance rejects?">How do pharmacy techs deal with insurance rejects?</button>
-      <button type="button" data-fill="How do payroll teams fix a number that does not match?">How do payroll teams fix a number that does not match?</button>
-      <button type="button" data-fill="How do warehouse leads pick a new scanner?">How do warehouse leads pick a new scanner?</button>
-    </div>
-  </div>
-</section>
-
-<section class="band" id="calls">
-  <div class="wrap">
-    <div class="rowcards" aria-label="Example calls">
-      <a class="pc" href="app/">
-        <div class="top"><div class="av" style="background:#e3efe8;color:#0f5f46">PA</div><div><h4>Payroll associate</h4><p>2 yrs · credit union</p></div></div>
-        <div class="meta"><span>30 min</span><b>Join</b></div>
-      </a>
-      <a class="pc" href="app/">
-        <div class="top"><div class="av" style="background:#ffe9b8;color:#7a5200">OA</div><div><h4>Ops analyst</h4><p>1 yr · payments company</p></div></div>
-        <div class="meta"><span>30 min</span><b>Join</b></div>
-      </a>
-      <a class="pc" href="app/">
-        <div class="top"><div class="av" style="background:#e6e3f7;color:#3a2f8a">PT</div><div><h4>Pharmacy technician</h4><p>3 yrs · retail pharmacy</p></div></div>
-        <div class="meta"><span>30 min</span><b>Join</b></div>
-      </a>
-      <a class="pc note-card" href="app/">
-        <div class="ledger">
-          <h5>Done</h5>
-          <p class="read">Read notes</p>
-          <p>The slow part is matching numbers that do not agree.</p>
+    <div class="how-grid">
+      <div class="how-l">
+        <span class="eyebrow rv">How it works</span>
+        <h2 class="h2 rv d1">Three steps from a question to <em>real answers.</em></h2>
+        <p class="lead rv d2">You say who does the work. We find people in that job. You take the call and leave with notes.</p>
+        <div class="rail" id="rail">
+          <span class="fill" id="railFill"></span>
+          <a href="#s1" class="on"><span class="d">01</span>Tell us who does the work</a>
+          <a href="#s2"><span class="d">02</span>We find people and book</a>
+          <a href="#s3"><span class="d">03</span>Ask what they did</a>
         </div>
-      </a>
+      </div>
+      <div class="how-r">
+        <article class="step on seen" id="s1" data-i="0">
+          <span class="num">STEP 01</span>
+          <h3>Tell us your question and who does the work.</h3>
+          <p>Name the job you want to understand, like the person who chases unpaid invoices at a small manufacturer. It takes a minute.</p>
+          <div class="vis">
+            <div class="fld"><small>Your question</small><span class="typing" id="typeIdea"></span></div>
+            <div class="fld"><small>Who does this work?</small>Accounts payable analyst, small manufacturer</div>
+            <div class="fld"><small>What do you want to learn?</small>How a stuck invoice gets unstuck</div>
+          </div>
+        </article>
+        <article class="step" id="s2" data-i="1">
+          <span class="num">STEP 02</span>
+          <h3>We find people who do the job, and book the call.</h3>
+          <p>You see a few people who do that work now, or did it recently. You pay <span data-bind="price">$50</span> for the 30-minute call. We set the time.</p>
+          <div class="vis">
+            <div class="match">
+              <div class="mrow sel"><div class="av" style="background:#e3efe8;color:#0f5f46">AP</div><div class="info"><b>AP analyst · 2 yrs</b><span>Manufacturing</span></div><span class="fit">Strong fit</span></div>
+              <div class="mrow"><div class="av" style="background:#ffe9b8;color:#7a5200">FO</div><div class="info"><b>Finance ops · 1 yr</b><span>Distributor</span></div><span class="fit">Good fit</span></div>
+              <div class="mrow"><div class="av" style="background:#e6e3f7;color:#3a2f8a">JA</div><div class="info"><b>Junior accountant · 1 yr</b><span>Same work, another company</span></div><span class="fit">Good fit</span></div>
+            </div>
+            <div class="pay"><span>30 minutes · paid per call</span><b data-bind="price">$50</b></div>
+          </div>
+        </article>
+        <article class="step" id="s3" data-i="2">
+          <span class="num">STEP 03</span>
+          <h3>Ask about what they did last time.</h3>
+          <p>Ask for the last real example, not a guess about the future. You leave with notes on how the work gets done.</p>
+          <div class="vis">
+            <div class="script">
+              <div class="sline"><span class="ok">✓</span><span>"Walk me through the last invoice that got stuck."</span></div>
+              <div class="sline"><span class="ok">✓</span><span>"What did you do next, and how long did it take?"</span></div>
+              <div class="sline bad"><span class="no">✕</span><span>"Would you use a tool that does this for you?"</span></div>
+            </div>
+            <div class="notes"><span>stuck for days</span><span>typed in by hand</span><span>chased in chat</span></div>
+          </div>
+        </article>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="band" id="how">
+<section class="sec" id="pricing">
   <div class="wrap">
-    <div class="steps">
-      <article>
-        <span class="eyebrow">01</span>
-        <h2>Ask your question</h2>
-        <p>Say what you need to understand, in a sentence.</p>
-      </article>
-      <article>
-        <span class="eyebrow">02</span>
-        <h2>We find people who do the work</h2>
-        <p>You see who they are, and why they fit.</p>
-      </article>
-      <article>
-        <span class="eyebrow">03</span>
-        <h2>Take the calls and get notes</h2>
-        <p>Talk, then read what you learned.</p>
-      </article>
+    <div class="sec-head center">
+      <span class="eyebrow rv">Pricing</span>
+      <h2 class="h2 rv d1">One price. A 30-minute <em>call.</em></h2>
+      <p class="lead rv d2">Move the slider to count the calls you want. Each one stays <span data-bind="price">$50</span>.</p>
+    </div>
+    <div class="price-grid">
+      <div class="calc rv">
+        <div class="calc-top">
+          <div><label for="calls">Calls you want</label><div class="val"><span id="callsOut">10</span><small>calls · 30 min each</small></div></div>
+        </div>
+        <input type="range" id="calls" min="1" max="30" value="10" aria-describedby="callsOut">
+        <div class="ticks"><span>1</span><span>10</span><span>20</span><span>30</span></div>
+        <div class="bars" id="bars">
+          <div class="bar" data-rate="50"><div class="lbl"><b>Ask the question</b><span>What you need to learn</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$50</div></div>
+          <div class="bar" data-rate="50"><div class="lbl"><b>We find people</b><span>Who do the work</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$50</div></div>
+          <div class="bar" data-rate="50"><div class="lbl"><b>You take the call</b><span>30 minutes</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$50</div></div>
+          <div class="bar us" data-rate="50"><div class="lbl"><b>Trenchline</b><span>People doing the job</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$50</div></div>
+        </div>
+        <div class="save"><svg width="20" height="20" style="color:#6b5600"><use href="#i-info"/></svg><span>Each call is <b id="saveOut">$50</b>. No subscription.</span></div>
+      </div>
+      <aside class="plan rv d1">
+        <span class="tag">Pre-seed and seed</span>
+        <h3>Pay per call</h3>
+        <div class="big"><span data-bind="price">$50</span><small> / 30-min call</small></div>
+        <ul>
+          <li><svg><use href="#i-check"/></svg>People who do the work</li>
+          <li><svg><use href="#i-check"/></svg>We set the time</li>
+          <li><svg><use href="#i-check"/></svg>Questions about what they did</li>
+          <li><svg><use href="#i-check"/></svg>No one shows? We rebook or refund</li>
+          <li><svg><use href="#i-check"/></svg>No subscription</li>
+        </ul>
+        <div class="spots"><div class="spots-h"><span>Customer discovery</span><span>One question at a time</span></div><div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+        <a class="btn btn-hl" href="app/" data-path="founder">Open the app <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
+        <p class="fine">Paid per call</p>
+      </aside>
     </div>
   </div>
 </section>
 
-<section class="band price-line" id="pricing">
+<section class="sec" id="proof" style="padding-top:0">
   <div class="wrap">
-    <p><span data-bind="price">$50</span> per 30-minute call.</p>
+    <div class="sec-head center">
+      <span class="eyebrow rv">What you get</span>
+      <h2 class="h2 rv d1">Hear how the work <em>actually</em> gets done.</h2>
+    </div>
+    <div class="stats rv">
+      <div class="stat"><div class="v" data-count="50">0</div><div class="k">Dollars per call</div></div>
+      <div class="stat"><div class="v" data-count="30">0</div><div class="k">Minutes on the call</div></div>
+      <div class="stat"><div class="v" data-count="4">0</div><div class="k">Years in the work, or less</div></div>
+      <div class="stat"><div class="v" data-count="1">0</div><div class="k">Question to start</div></div>
+    </div>
+    <div class="tests">
+      <figure class="t rv"><div class="stars" aria-hidden="true"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"Walk me through the last invoice that got stuck, and what you did next."</p><figcaption class="who"><div class="av" style="background:#e3efe8;color:#0f5f46">AP</div><div><b>Payroll associate</b><span>Credit union</span></div></figcaption></figure>
+      <figure class="t rv d1"><div class="stars" aria-hidden="true"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"Show me the last return that took too long, from the first scan to the shelf."</p><figcaption class="who"><div class="av" style="background:#ffe9b8;color:#7a5200">WH</div><div><b>Warehouse lead</b><span>Retail</span></div></figcaption></figure>
+      <figure class="t rv d2"><div class="stars" aria-hidden="true"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"What did you check on the last site visit before you wrote the daily report?"</p><figcaption class="who"><div class="av" style="background:#e6e3f7;color:#3a2f8a">SE</div><div><b>Site engineer</b><span>Construction</span></div></figcaption></figure>
+    </div>
   </div>
 </section>
 
-<section class="closer">
+<section class="jr" id="juniors">
   <div class="wrap">
-    <h2>Stop guessing. <em>Ask the people doing the job.</em></h2>
-    <div class="ask-wrap">
-      <form class="askbox" id="ask2" action="app/" method="get">
-        <label class="sr" for="q2">Your question</label>
-        <input id="q2" name="q" type="text" autocomplete="off" autocapitalize="sentences" enterkeyhint="search" spellcheck="false" placeholder="How do dental clinics pick scheduling software?" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggest2">
-        <button class="btn btn-p" type="submit">Ask</button>
-        <div class="suggest" id="suggest2" role="listbox" hidden></div>
+    <div class="jr-grid">
+      <div>
+        <span class="eyebrow rv">For call-takers</span>
+        <h2 class="h2 rv d1">Get paid to talk about <em>your job.</em></h2>
+        <p class="lead rv d2">If you are new in a role, or a few years in, founders want to hear how the work gets done. <span data-bind="payout">$35</span> for a 30-minute call, on your schedule.</p>
+        <ul class="perks">
+          <li class="rv"><span class="ic"><svg><use href="#i-cash"/></svg></span><b>You get paid</b><span data-bind="payout">$35</span> when the call happens.</li>
+          <li class="rv d1"><span class="ic"><svg><use href="#i-cal"/></svg></span><b>You choose</b>Accept or decline each request. No lottery.</li>
+          <li class="rv d2"><span class="ic"><svg><use href="#i-lock"/></svg></span><b>Nothing confidential</b>Talk about how the work is done, never your employer's secrets.</li>
+          <li class="rv d3"><span class="ic"><svg><use href="#i-cv"/></svg></span><b>Useful practice</b>Explain your job to a founder who is just starting.</li>
+        </ul>
+      </div>
+      <div class="earn rv d2">
+        <h4>What you could earn</h4>
+        <div class="row"><div class="amt">$<span id="earnOut">140</span><small> / month</small></div></div>
+        <label for="perMonth" style="display:block;margin-top:18px"><span id="pmOut">4</span> calls a month × <span data-bind="payout">$35</span></label>
+        <input type="range" id="perMonth" min="1" max="12" value="4">
+        <div class="ticks"><span>1</span><span>4</span><span>8</span><span>12</span></div>
+        <div class="req">
+          <div class="top"><span>New request</span><b data-bind="payout">$35</b></div>
+          <h5>How do site engineers handle questions on a mid-size build?</h5>
+          <p>A founder learning construction software · 30 min</p>
+          <div class="acts"><span class="y">Accept</span><span>Decline</span></div>
+        </div>
+        <a class="btn btn-hl" href="app/inbox.html" data-path="junior" style="width:100%;margin-top:18px">Take calls <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="trust">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow rv">Trust</span>
+      <h2 class="h2 rv d1">Talk about the <em>work</em>, never the employer.</h2>
+      <p class="lead rv d2">Calls should help a founder and stay safe for the person who takes them.</p>
+    </div>
+    <div class="trust">
+      <div class="tr rv"><span class="ic"><svg><use href="#i-chat"/></svg></span><h4>How, not who</h4><p>Talk about steps, tools, and what slows the work down. Not customer names, prices, or private plans.</p></div>
+      <div class="tr rv d1"><span class="ic"><svg><use href="#i-user"/></svg></span><h4>People who do the job</h4><p>Someone who does this work now, or did it recently, at a company like the one you are learning about.</p></div>
+      <div class="tr rv d2"><span class="ic"><svg><use href="#i-shield"/></svg></span><h4>Clear ground rules</h4><p>Call-takers agree not to share secrets. Founders agree not to ask for them.</p></div>
+      <div class="tr rv d3"><span class="ic"><svg><use href="#i-lock"/></svg></span><h4>Private by default</h4><p>No recording unless both people say yes. A first name is enough.</p></div>
+    </div>
+    <div class="limits rv">
+      <span class="ic"><svg><use href="#i-info"/></svg></span>
+      <p><b>What a call will not tell you.</b> The person in the work knows how the job gets done. They often do not decide the budget. For who pays, talk to a buyer as well. We will say so when that is the question.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="soon rv">
+      <div>
+        <span class="eyebrow">Coming soon</span>
+        <h2 class="h2">Notes that <em>remember</em> every call.</h2>
+        <p class="lead">Quotes and patterns from each conversation, in one place. See what keeps coming up, and when you have heard enough.</p>
+      </div>
+      <div class="board" aria-hidden="true">
+        <div class="col"><h6>To book <span>3</span></h6><div class="kc"><b>AP analyst</b><span>Manufacturing</span></div><div class="kc"><b>Buyer</b><span>Who pays</span><i class="w">Budget</i></div></div>
+        <div class="col"><h6>Done <span>4</span></h6><div class="kc"><b>Finance ops</b><span>"Typed in by hand"</span><i>Pain</i></div><div class="kc"><b>Junior accountant</b><span>"Lives in a shared inbox"</span><i>Pain</i></div></div>
+        <div class="col"><h6>Patterns <span>2</span></h6><div class="kc"><b>Numbers that do not match</b><span>Heard on every call</span><i>Strong</i></div><div class="kc"><b>Chasing in chat</b><span>Heard often</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq" style="padding-top:20px">
+  <div class="wrap faq-grid">
+    <div>
+      <span class="eyebrow rv">FAQ</span>
+      <h2 class="h2 rv d1">Questions, <em>answered.</em></h2>
+      <p class="lead rv d2">Something else? Open the app and ask it there.</p>
+    </div>
+    <div class="faq rv d1">
+      <details open><summary>Why talk to people in the work?<span class="pl"></span></summary><div class="ans">They are closest to the day-to-day job, the part your product has to fit. They can tell you what really happens.</div></details>
+      <details><summary>Can they tell me who buys and what they pay?<span class="pl"></span></summary><div class="ans">Usually not. Use the call to understand the work and the pain. For budget and who decides, also talk to a buyer.</div></details>
+      <details><summary>How fast is a call?<span class="pl"></span></summary><div class="ans">You ask a question, we find people who do that work, and you book a 30-minute call. If we cannot find a fit, we say so.</div></details>
+      <details><summary>How does payment work?<span class="pl"></span></summary><div class="ans">Founders pay <span data-bind="price">$50</span> for each 30-minute call. Call-takers receive <span data-bind="payout">$35</span> when the call happens. If no one joins, we rebook or refund you.</div></details>
+      <details><summary>Can I take a call if I am in the job now?<span class="pl"></span></summary><div class="ans">Yes, if you talk about how the work is done in general. Do not share secrets about your employer, its customers, or its plans. Check your own agreement. Someone who left, or who does the same job at another company, is a good fit too.</div></details>
+      <details><summary>How is this different from running a research study?<span class="pl"></span></summary><div class="ans">A study is built for a research team. Trenchline is for a pre-seed or seed founder who needs a few honest calls with people who do the work.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="join" style="padding-top:40px">
+  <div class="wrap wl">
+    <div class="wl-side">
+      <span class="eyebrow rv">Start</span>
+      <h2 class="h2 rv d1">Open the app and <em>ask.</em></h2>
+      <p class="lead rv d2">Pre-seed and seed founders start with one question. Call-takers start from the inbox.</p>
+      <div class="wl-points rv d3">
+        <div><svg><use href="#i-check"/></svg>One question is enough to start</div>
+        <div><svg><use href="#i-check"/></svg>You see people who do the work</div>
+        <div><svg><use href="#i-check"/></svg>You pay when you book a call</div>
+      </div>
+    </div>
+    <div class="form-card rv d1" id="formCard">
+      <div class="tabs" role="tablist" data-v="founder" id="tabs">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" role="tab" id="tab-founder" aria-selected="true" aria-controls="pane-founder" data-v="founder">I'm a founder</button>
+        <button type="button" role="tab" id="tab-junior" aria-selected="false" aria-controls="pane-junior" data-v="junior">I'm a call-taker</button>
+      </div>
+      <form id="wlForm" novalidate>
+        <input type="hidden" name="path" id="pathField" value="founder">
+        <div class="f2">
+          <div class="field"><label for="name">Name</label><input id="name" name="name" autocomplete="name" required></div>
+          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        </div>
+        <div class="pane" id="pane-founder" role="tabpanel" aria-labelledby="tab-founder">
+          <div class="field"><label for="idea">Your question, in a sentence</label><textarea id="idea" name="idea" placeholder="How do small teams unstick an invoice?"></textarea></div>
+          <div class="field" style="margin-top:16px"><label for="role">Who does this work today? <span>(role)</span></label><input id="role" name="target_role" placeholder="Accounts payable analyst"></div>
+        </div>
+        <div class="pane" id="pane-junior" role="tabpanel" aria-labelledby="tab-junior" hidden>
+          <div class="f2">
+            <div class="field"><label for="jrole">Current or recent role</label><input id="jrole" name="role" placeholder="Site engineer"></div>
+            <div class="field"><label for="yrs">Years in role</label><select id="yrs" name="years"><option>Internship</option><option>Less than 1 year</option><option>1–2 years</option><option>2–4 years</option></select></div>
+          </div>
+          <div class="field" style="margin-top:16px"><label for="li">LinkedIn <span>(optional)</span></label><input id="li" name="linkedin" type="url" placeholder="https://linkedin.com/in/…"></div>
+        </div>
+        <label class="consent"><input type="checkbox" required id="consent"> <span>I agree to be contacted about Trenchline. <span id="consentJr" hidden>I will not share secrets about any employer.</span></span></label>
+        <button class="btn btn-p" type="submit" id="submitBtn">Open the app <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></button>
+        <p class="form-fine" id="formMsg" role="status" aria-live="polite">Founders go to the app. Call-takers go to the inbox.</p>
       </form>
+      <div class="ok-state" role="status">
+        <div class="ic"><svg width="26" height="26"><use href="#i-check"/></svg></div>
+        <h3>Opening the app.</h3>
+        <p id="okMsg">Taking you there now.</p>
+      </div>
     </div>
-    <p class="take"><a href="app/inbox.html">Want to take calls? Get paid</a></p>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 class="rv">Stop guessing. <mark class="hl">Ask the people.</mark></h2>
+    <div class="ctas rv d1"><a class="btn btn-p" href="app/" data-path="founder">Open the app <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a><a class="btn btn-g" href="app/inbox.html" data-path="junior">Get paid to take calls</a></div>
   </div>
 </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="fb" style="margin-top:0;border:0;padding-top:0"><span>© Trenchline</span><a href="app/">Open the app</a></div>
+    <div class="ft">
+      <div>
+        <a class="brand" href="#top" aria-label="Trenchline home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#151513"/><path d="M5.5 12.5h5.5v8h10v-8h5.5" stroke="#f6f3ec" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="16" cy="16.5" r="2" fill="#ffe36e"/></svg>trenchline</a>
+        <p>Customer discovery for pre-seed and seed founders. Talk to the people who actually do the work.</p>
+      </div>
+      <div><h6>Product</h6><ul><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#trust">Trust</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h6>Join</h6><ul><li><a href="app/">For founders</a></li><li><a href="app/inbox.html">For call-takers</a></li></ul></div>
+      <div><h6>On this page</h6><ul><li><a href="#problem">Why</a></li><li><a href="#juniors">Take calls</a></li><li><a href="#join">Start</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+    </div>
+    <div class="fb"><span>© Trenchline</span><a href="app/">Open the app</a></div>
+    <div class="giant" aria-hidden="true">trenchline</div>
   </div>
 </footer>
 <script src="app/assets/config.js" defer></script>
