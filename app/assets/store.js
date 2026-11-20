@@ -593,18 +593,132 @@
       }),
     ];
 
+    const loads = story(
+      "req_loads",
+      Object.assign({}, shared, {
+        title: "How do owner-operators choose which load to take?",
+        decision: "How do owner-operators choose which load to take?",
+        role: "Owner-operator",
+        fn: "Operations",
+        industry: "Logistics",
+        screening: [
+          "Walk me through the last load you turned down.",
+          "What made a load worth the miles?",
+          "What do you still check before you say yes?",
+        ],
+        qualify: "Chooses their own loads.",
+      }),
+      iso(now - 2 * day)
+    );
+
     freight.name = "Find carriers";
     cancel.name = "Cover cancellations";
     quotes.name = "Freight quotes";
-    [freight, cancel, quotes].forEach((req) => fillAnswers(req, people));
+    loads.name = "Pick a load";
+    [freight, cancel, quotes, loads].forEach((req) => {
+      req.status = "active";
+      fillAnswers(req, people);
+    });
+
+    function atHour(dayOffset, hour) {
+      const d = new Date(now);
+      d.setDate(d.getDate() + dayOffset);
+      d.setHours(hour, 0, 0, 0);
+      return d.toISOString();
+    }
+
+    const taker = {
+      name: "Jordan H.",
+      email: "jordan@example.com",
+      role: "Dispatcher",
+      background: "I cover loads that fall off in the afternoon and find a backup truck before the dock closes.",
+      companyType: "Freight brokerage",
+      years: 6,
+      example: true,
+      saved: false,
+    };
+    people.push({
+      id: "ct_self",
+      example: true,
+      self: true,
+      name: taker.name,
+      role: taker.role,
+      years: taker.years,
+      yearsLabel: taker.years + " yrs",
+      fn: "Operations",
+      industry: "Logistics",
+      employer: "Example desk",
+      employerType: taker.companyType,
+      companySize: "51–200",
+      former: false,
+      geography: "United States",
+      channel: "email",
+      topics: ["loads", "drivers"],
+      wont: "Employer secrets.",
+      bio: taker.background,
+      availability: ["Tue 12:00", "Thu 12:00", "Fri 09:00"],
+      chosenSlots: [atHour(1, 9), atHour(1, 15), atHour(2, 12)],
+      timezone: "America/Toronto",
+      onboarded: true,
+      complianceAcceptedAt: iso(now),
+    });
+
+    bookings.push(
+      booking({
+        id: "book_ct_up_1",
+        requestId: "req_quotes",
+        requestTitle: quotes.title,
+        personId: "ct_self",
+        slot: atHour(1, 10),
+        status: "confirmed",
+        createdAt: iso(now),
+      }),
+      booking({
+        id: "book_ct_up_2",
+        requestId: "req_loads",
+        requestTitle: loads.title,
+        personId: "ct_self",
+        slot: atHour(2, 15),
+        status: "confirmed",
+        createdAt: iso(now),
+      }),
+      booking({
+        id: "book_ct_done_1",
+        requestId: "req_cancel",
+        requestTitle: cancel.title,
+        personId: "ct_self",
+        slot: atHour(-4, 11),
+        status: "completed",
+        minutes: TL.CONFIG.callMinutes,
+        notes: "The first call is the driver. If they are out of hours, the backup carrier is already on a sheet.",
+        summary: "The first call is the driver. If they are out of hours, the backup carrier is already on a sheet.",
+        createdAt: atHour(-5, 11),
+        completedAt: atHour(-4, 11),
+      }),
+      booking({
+        id: "book_ct_done_2",
+        requestId: "req_freight",
+        requestTitle: freight.title,
+        personId: "ct_self",
+        slot: atHour(-8, 14),
+        status: "completed",
+        minutes: TL.CONFIG.callMinutes,
+        notes: "New carriers still start as a text. The slow part is checking the truck is empty this week.",
+        summary: "New carriers still start as a text. The slow part is checking the truck is empty this week.",
+        createdAt: atHour(-9, 14),
+        completedAt: atHour(-8, 14),
+      })
+    );
 
     const state = {
-      version: 7,
+      version: 8,
+      takerExamples: true,
+      callTaker: taker,
       session: { role: "buyer", forceOnboarding: false },
       buyer: buyer,
       expertId: "ex_maya",
       pool: people,
-      requests: [quotes, cancel, freight],
+      requests: [loads, quotes, cancel, freight],
       invitations: invitations,
       bookings: bookings,
       credits: {
@@ -629,6 +743,7 @@
   function expire(state) {
     const limit = TL.CONFIG.inviteResponseHours * 3600000;
     let changed = false;
+    state.invitations = state.invitations || [];
     state.invitations.forEach((inv) => {
       if (inv.status === "pending" && Date.now() - Date.parse(inv.sentAt) > limit) {
         inv.status = "expired";
@@ -639,18 +754,94 @@
     return state;
   }
 
+  const LEGACY_KEYS = ["trenchline.mvp.v1", "trenchline.app-mvp.v1", "trenchline.mvp.v2", "trenchline.app.v1", "trenchline.app.v7"];
+
+  function readStored(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const state = JSON.parse(raw);
+      return state && typeof state === "object" ? state : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function hasShape(state) {
+    return !!(state && Array.isArray(state.requests) && Array.isArray(state.pool) && state.buyer);
+  }
+
+  function legacyState() {
+    let best = null;
+    let score = -1;
+    LEGACY_KEYS.forEach((key) => {
+      if (key === TL.CONFIG.storageKey) return;
+      const state = readStored(key);
+      if (!state) return;
+      const n = (Array.isArray(state.requests) ? state.requests.length : 0) + (state.callTaker ? 3 : 0) + (Array.isArray(state.bookings) ? 1 : 0);
+      if (n > score) {
+        best = state;
+        score = n;
+      }
+    });
+    return best;
+  }
+
+  function mergeExample(old) {
+    const fresh = seed();
+    if (!hasShape(old)) return fresh;
+    const exampleIds = {};
+    fresh.requests.forEach((req) => { exampleIds[req.id] = true; });
+    const kept = old.requests.filter((req) => req && req.id && !exampleIds[req.id]);
+    fresh.requests.forEach((req) => {
+      const prev = old.requests.find((item) => item && item.id === req.id);
+      if (!prev) return;
+      if (prev.name) req.name = prev.name;
+      if (prev.status) req.status = prev.status;
+      if (Array.isArray(prev.passed)) req.passed = prev.passed.slice();
+      if (prev.answers && prev.answers.ct_self) req.answers.ct_self = prev.answers.ct_self;
+    });
+    fresh.requests = kept.concat(fresh.requests);
+    const bookIds = {};
+    fresh.bookings.forEach((item) => { bookIds[item.id] = true; });
+    const keptBooks = (Array.isArray(old.bookings) ? old.bookings : []).filter((item) => item && item.id && !bookIds[item.id]);
+    fresh.bookings = keptBooks.concat(fresh.bookings);
+    const taker = old.callTaker;
+    const saved = !!(taker && (taker.saved || (taker.name && taker.example !== true && taker.name !== "Jordan H.")));
+    if (saved) {
+      fresh.callTaker = taker;
+      fresh.callTaker.saved = true;
+      const theirs = old.pool.find((p) => p && p.id === "ct_self");
+      if (theirs) {
+        const at = fresh.pool.findIndex((p) => p.id === "ct_self");
+        if (at >= 0) fresh.pool[at] = theirs;
+        else fresh.pool.push(theirs);
+      }
+    }
+    if (old.buyer && old.buyer.name && old.buyer.email) fresh.buyer = old.buyer;
+    fresh.version = 8;
+    fresh.takerExamples = true;
+    return fresh;
+  }
+
+  function needsExample(state) {
+    if (!hasShape(state) || state.version !== 8 || !state.takerExamples) return true;
+    if (!state.callTaker || !state.callTaker.name) return true;
+    if (!state.requests.length) return true;
+    if (!Array.isArray(state.bookings)) return true;
+    return false;
+  }
+
   function load() {
     if (cached) return cached;
+    let state = null;
     const raw = dbRead();
-    if (!raw) return persist(seed());
-    try {
-      const state = JSON.parse(raw);
-      if (!state || state.version !== 7 || !state.buyer || !state.pool) return persist(seed());
-      cached = state;
-      return expire(state);
-    } catch (e) {
-      return persist(seed());
+    if (raw) {
+      try { state = JSON.parse(raw); } catch (e) { state = null; }
     }
+    if (!state) state = legacyState();
+    if (needsExample(state)) state = mergeExample(state);
+    return persist(expire(state));
   }
 
   function person(state, id) {
@@ -856,6 +1047,17 @@
   TL.store = {
     PIPELINE: PIPELINE,
     get: load,
+    openRequests: function () {
+      const state = load();
+      const taker = state.callTaker;
+      const filter = !!(taker && taker.saved);
+      return (state.requests || []).filter((req) => {
+        if (!req || req.status === "paused") return false;
+        if ((req.passed || []).indexOf("ct_self") >= 0) return false;
+        if (filter && !takerMatches(req, taker)) return false;
+        return true;
+      });
+    },
     reset: function () {
       cached = null;
       dbClear();
@@ -988,7 +1190,7 @@
       if (!name || !email || !role) return fail("Add your name, email, and role.");
       const years = Math.max(0, parseInt(input.years, 10) || 0);
       const companyType = clip(input.companyType, 80);
-      state.callTaker = { name: name, email: email, role: role, background: background, companyType: companyType, years: years || 2 };
+      state.callTaker = { name: name, email: email, role: role, background: background, companyType: companyType, years: years || 2, example: false, saved: true };
       let who = state.pool.find((p) => p.id === "ct_self");
       if (!who) {
         who = {

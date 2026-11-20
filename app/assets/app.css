@@ -121,6 +121,7 @@ details summary{cursor:pointer;color:var(--g);font-weight:560}
 .rename{display:flex;gap:8px;align-items:center;width:min(520px,100%)}
 .rename input{min-width:0}
 .more{margin-top:14px}
+.empty,.sub + .more{margin-top:10px}
 .checks{display:flex;flex-direction:column;gap:8px;margin-top:8px}
 .checks label{display:flex;gap:8px;align-items:flex-start;font-weight:450;font-size:14px}
 .checks input{width:16px;height:16px;margin-top:3px;accent-color:var(--g);flex:none}

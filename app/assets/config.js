@@ -12,7 +12,7 @@
     payoutDays: 15,
     linkedinDailyCap: 20,
     emailDailyCap: 60,
-    storageKey: "trenchline.mvp.v1",
+    storageKey: "trenchline.app.v8",
     featuredVertical: "Fintech / financial services",
   });
 })();

@@ -204,7 +204,7 @@
         const p = person(b.personId);
         return `<article class="card"><h2 class="who">${esc(b.requestTitle)}</h2><p class="role">${esc(p ? p.name : "")} · ${esc(when(b.slot))} · ${esc(b.status)}</p></article>`;
       }).join("");
-      return `<h1>Calendar</h1>${rows || "<p class='sub'>No calls yet.</p>"}`;
+      return `<h1>Calendar</h1>${rows || blankCopy("Booked calls show up here, with the person and the time.")}`;
     }
     const state = TL.store.get();
     const openOn = uiState.listTab !== "closed";
@@ -212,7 +212,7 @@
     const rows = state.requests.filter((r) => {
       const paused = r.status === "paused";
       if (openOn ? paused : !paused) return false;
-      return !q || r.title.toLowerCase().indexOf(q) >= 0;
+      return !q || ((r.title || "") + " " + (r.name || "")).toLowerCase().indexOf(q) >= 0;
     }).map((r) => {
       const c = projectCounts(r);
       const openDesc = uiState.desc === r.id;
@@ -237,7 +237,7 @@
       </div>
       <table class="grid">
         <thead><tr><th>Project</th><th>People</th><th>Scheduled</th><th>Completed</th><th>Updated</th><th>Status</th></tr></thead>
-        <tbody>${rows || "<tr><td colspan='6'>No projects.</td></tr>"}</tbody>
+        <tbody>${rows || blankRow(6, "Projects you start show up here, with the people, the calls, and the status.")}</tbody>
       </table>
       <form data-act="account" class="account">
         <label class="field">Name<input type="text" name="name" value="${esc(acct.name || "")}" required></label>
@@ -351,10 +351,10 @@
     }).join("");
     const decRows = declined.map((p) => `<tr><td>${esc(p.name)}</td><td>${esc(p.role)}</td><td>${esc(p.employerType || "")}</td></tr>`).join("");
     let table = "";
-    if (tab === "scheduled") table = `<table class="grid"><thead><tr><th>Call</th><th>Price</th><th></th></tr></thead><tbody>${schedRows || "<tr><td colspan='3'>No calls scheduled.</td></tr>"}</tbody></table>`;
-    else if (tab === "done") table = `<table class="grid"><tbody>${doneRows || "<tr><td>No completed calls.</td></tr>"}</tbody></table>`;
-    else if (tab === "declined") table = `<table class="grid"><thead><tr><th>Name</th><th>Role</th><th>Company</th></tr></thead><tbody>${decRows || "<tr><td colspan='3'>No one yet.</td></tr>"}</tbody></table>`;
-    else table = `<table class="grid people"><thead><tr><th></th><th>Name</th><th>Company</th><th>Availability</th><th></th></tr></thead><tbody>${rows || "<tr><td colspan='5'>No one yet.</td></tr>"}</tbody></table>`;
+    if (tab === "scheduled") table = `<table class="grid"><thead><tr><th>Call</th><th>Price</th><th></th></tr></thead><tbody>${schedRows || blankRow(3, "Calls you book show up here, with the time and the price.")}</tbody></table>`;
+    else if (tab === "done") table = `<table class="grid"><tbody>${doneRows || blankRow(1, "Finished calls show up here, with the notes you saved.")}</tbody></table>`;
+    else if (tab === "declined") table = `<table class="grid"><thead><tr><th>Name</th><th>Role</th><th>Company</th></tr></thead><tbody>${decRows || blankRow(3, "People you pass on show up here.")}</tbody></table>`;
+    else table = `<table class="grid people"><thead><tr><th></th><th>Name</th><th>Company</th><th>Availability</th><th></th></tr></thead><tbody>${rows || blankRow(5, "People who can talk about this show up here.")}</tbody></table>`;
     const who = uiState.panel && uiState.panel.request === req.id ? person(uiState.panel.person) : null;
     const drawer = who ? (uiState.panel.kind === "time" ? timePanel(req, who) : profilePanel(req, who)) : "";
     const renaming = uiState.rename === req.id;
@@ -475,23 +475,16 @@
       </aside>`;
   }
 
-  function takerSignup() {
-    return `<h1>Taking calls</h1>
-      <p class="sub">Say what you do. Requests from this browser show up here. Example only. Nothing is emailed.</p>
-      <p class="ex">Example data</p>
-      <form data-act="taker">
-        <label class="field">Name<input type="text" name="name" required></label>
-        <label class="field">Email<input type="text" name="email" required></label>
-        <label class="field">Role<input type="text" name="role" placeholder="Freight coordinator" required></label>
-        <label class="field">Company type<input type="text" name="companyType" placeholder="Freight brokerage"></label>
-        <label class="field">Years<input type="text" name="years" inputmode="numeric" placeholder="6"></label>
-        <label class="field">Short bio<textarea name="background" placeholder="How you find carriers, cover a cancellation, or ask for a quote."></textarea></label>
-        <div class="form-actions"><button class="btn" type="submit">Save</button></div>
-      </form>`;
+  function blankCopy(text) {
+    return `<p class="sub">${text}</p><p class="more"><button type="button" class="btn secondary" data-act="reset">Restore example</button></p>`;
   }
 
-  function takerRequests(state) {
-    const open = state.requests.filter((req) => req.status !== "paused" && (req.passed || []).indexOf("ct_self") < 0);
+  function blankRow(cols, text) {
+    return `<tr><td colspan="${cols}">${blankCopy(text)}</td></tr>`;
+  }
+
+  function takerRequests() {
+    const open = TL.store.openRequests();
     const rows = open.map((req) => {
       const answered = req.answers && req.answers.ct_self && req.answers.ct_self.filter(Boolean).length;
       return `<tr>
@@ -506,14 +499,17 @@
     return `<h1>Requests</h1>
       <p class="sub">Projects people want to talk about. ${money(C.expertPayoutUsd)} / ${C.callMinutes} min. Example only. Nothing is paid.</p>
       <table class="grid"><thead><tr><th>Project</th><th>Question</th><th>Who they want</th><th>Payout</th><th></th></tr></thead>
-      <tbody>${rows || "<tr><td colspan='5'>No requests yet.</td></tr>"}</tbody></table>
+      <tbody>${rows || blankRow(5, "Requests show up here with the project, the question, and who they want to talk to.")}</tbody></table>
       ${panelReq ? answerPanel(panelReq) : ""}`;
   }
 
   function takerCalls(state) {
     const tab = uiState.ctab || "upcoming";
-    const mine = state.bookings.filter((b) => b.personId === "ct_self");
+    const mine = (state.bookings || []).filter((b) => b.personId === "ct_self");
     const list = mine.filter((b) => tab === "completed" ? b.status !== "confirmed" : b.status === "confirmed");
+    const empty = tab === "completed"
+      ? "Finished calls show up here, with the day they happened."
+      : "Calls you accept show up here, with the time.";
     const rows = list.map((b) => {
       const req = TL.store.request(b.requestId);
       return `<tr><td>${esc((req && (req.name || req.title)) || b.requestTitle)}</td><td>${esc(when(b.slot))}</td><td>${esc(b.status === "confirmed" ? "Upcoming" : "Completed")}</td></tr>`;
@@ -523,11 +519,11 @@
         <button type="button" class="${tab === "upcoming" ? "on" : ""}" data-act="ctab" data-tab="upcoming">Upcoming (${mine.filter((b) => b.status === "confirmed").length})</button>
         <button type="button" class="${tab === "completed" ? "on" : ""}" data-act="ctab" data-tab="completed">Completed (${mine.filter((b) => b.status !== "confirmed").length})</button>
       </div>
-      <table class="grid"><thead><tr><th>Project</th><th>When</th><th></th></tr></thead><tbody>${rows || "<tr><td colspan='3'>No calls yet.</td></tr>"}</tbody></table>`;
+      <table class="grid"><thead><tr><th>Project</th><th>When</th><th></th></tr></thead><tbody>${rows || blankRow(3, empty)}</tbody></table>`;
   }
 
   function takerEarnings(state) {
-    const mine = state.bookings.filter((b) => b.personId === "ct_self");
+    const mine = (state.bookings || []).filter((b) => b.personId === "ct_self");
     const done = mine.filter((b) => b.status === "completed");
     const upcoming = mine.filter((b) => b.status === "confirmed");
     const total = done.reduce((n, b) => n + TL.store.payoutInfo(b).amount, 0);
@@ -544,7 +540,7 @@
         <div><span>Completed</span><strong>${done.length}</strong></div>
         <div><span>Example total</span><strong>${money(total)}</strong></div>
       </div>
-      <table class="grid"><thead><tr><th>Project</th><th>Status</th><th>Amount</th></tr></thead><tbody>${rows || "<tr><td colspan='3'>No calls yet.</td></tr>"}</tbody></table>`;
+      <table class="grid"><thead><tr><th>Project</th><th>Status</th><th>Amount</th></tr></thead><tbody>${rows || blankRow(3, "Finished calls show up here at " + money(C.expertPayoutUsd) + " each. Nothing is paid in this example.")}</tbody></table>`;
   }
 
   function takerProfile(state) {
@@ -556,7 +552,7 @@
       return `<label><input type="checkbox" name="slot" value="${esc(iso)}" ${picked.indexOf(iso) >= 0 ? "checked" : ""}> ${esc(when(iso))}</label>`;
     }).join("");
     return `<h1>Profile</h1>
-      <p class="sub">This is what shows when someone looks at you.</p>
+      <p class="sub">${taker.example ? "Example profile. " : ""}This is what shows when someone looks at you.</p>
       <form data-act="profile">
         <label class="field">Name<input type="text" name="name" value="${esc(taker.name || "")}" required></label>
         <label class="field">Email<input type="text" name="email" value="${esc(taker.email || "")}" required></label>
@@ -572,7 +568,6 @@
 
   function inbox() {
     const state = TL.store.get();
-    if (!state.callTaker) return takerSignup();
     const view = qs("view") || "requests";
     if (view === "calls") return takerCalls(state);
     if (view === "earnings") return takerEarnings(state);
@@ -587,7 +582,7 @@
       return `<tr><td>${esc(b.requestTitle)}</td><td>${esc(b.status)}</td><td>${money(pay.amount)}</td><td>${esc(pay.status)}</td></tr>`;
     }).join("");
     return `<h1>Payouts</h1><p class="sub">Paid for minutes completed, about ${C.payoutDays} days later. Example only. Nothing is transferred.</p>
-      <table><thead><tr><th>Call</th><th>Status</th><th>Amount</th><th>Payout</th></tr></thead><tbody>${rows || "<tr><td colspan='4'>None yet.</td></tr>"}</tbody></table>`;
+      <table><thead><tr><th>Call</th><th>Status</th><th>Amount</th><th>Payout</th></tr></thead><tbody>${rows || blankRow(4, "Finished calls show up here after the minutes are logged.")}</tbody></table>`;
   }
 
   function consent() {
@@ -661,7 +656,13 @@
     if (row && !e.target.closest("a, button, input, label")) { location.href = row.dataset.go; return; }
     const b = e.target.closest("[data-act]");
     if (!b || b.type === "submit") return;
-    if (b.dataset.act === "reset") { TL.store.reset(); uiState.panel = null; go("index.html", "Example restored."); return; }
+    if (b.dataset.act === "reset") {
+      TL.store.reset();
+      uiState.panel = null;
+      uiState.apanel = null;
+      const here = /inbox\.html|expert\.html/.test(location.pathname);
+      return go(here ? "inbox.html" + location.search : "index.html", "Example restored.");
+    }
     if (b.dataset.act === "ptab") { uiState.listTab = b.dataset.tab; uiState.menu = null; paint(); return; }
     if (b.dataset.act === "onlystar") { uiState.onlyStar = !!b.checked; paint(); return; }
     if (b.dataset.act === "stab") { uiState.ptab = b.dataset.tab; paint(); return; }
@@ -824,7 +825,7 @@
     return `<a class="back" href="index.html">Projects</a>
       <h1>${esc(req.name || req.title)}</h1>
       <p class="sub">${esc(req.title)}</p>
-      <section class="section"><h2>People to talk to</h2>${people || "<p class='sub'>No one yet.</p>"}</section>`;
+      <section class="section"><h2>People to talk to</h2>${people || blankCopy("People who can talk about this show up here.")}</section>`;
   }
 
   function startFromQuestion(root, q) {
