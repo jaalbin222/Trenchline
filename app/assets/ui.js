@@ -26,7 +26,7 @@
   function go(url, msg) { if (msg) flash(msg); location.href = url; }
   function show(text, bad) { banner = { text, bad: !!bad }; paint(); }
 
-  const uiState = { q: "", pq: "", listTab: "open", ptab: "open", onlyStar: false, panel: null, menu: null, desc: null, reqId: "" };
+  const uiState = { q: "", pq: "", listTab: "open", ptab: "open", onlyStar: false, panel: null, menu: null, desc: null, reqId: "", rename: null, apanel: null, ctab: "upcoming" };
 
   function shell(page, body) {
     const cal = page === "home" && qs("view") === "calendar";
@@ -38,16 +38,23 @@
       <aside class="side">
         <a class="brand" href="index.html">trenchline</a>
         <nav>
-          ${item("index.html", "Projects", (page === "home" || page === "request" || page === "requestNew" || page === "book" || page === "call") && !cal)}
-          ${item("inbox.html", "Taking a call", page === "inbox" || page === "expert" || page === "payouts" || page === "consent")}
-          ${item("index.html?view=calendar", "Calendar", cal)}
+          ${page === "inbox" || page === "expert" || page === "payouts" || page === "consent"
+            ? `<p class="side-label">Taking calls</p>
+               ${item("inbox.html", "Requests", (qs("view") || "requests") === "requests")}
+               ${item("inbox.html?view=calls", "My calls", qs("view") === "calls")}
+               ${item("inbox.html?view=earnings", "Earnings", qs("view") === "earnings")}
+               ${item("inbox.html?view=profile", "Profile", qs("view") === "profile")}
+               ${item("index.html", "Projects", false)}`
+            : `${item("index.html", "Projects", (page === "home" || page === "request" || page === "requestNew" || page === "book" || page === "call") && !cal)}
+               ${item("index.html?view=calendar", "Calendar", cal)}
+               ${item("inbox.html", "Taking calls", false)}`}
         </nav>
         <p class="ex">Example data</p>
       </aside>
       <div class="maincol">
-        <div class="topbar"><a class="btn" href="request-new.html">Request a new call</a></div>
+        <div class="topbar"><a class="btn" href="request-new.html">New project</a></div>
         ${msg}${body}
-        <p class="foot">${money(C.pricePerCallUsd)} / 30 min. <button type="button" data-act="reset">Restore example</button></p>
+        <p class="foot">${money(page === "inbox" || page === "expert" || page === "payouts" || page === "consent" ? C.expertPayoutUsd : C.pricePerCallUsd)} / ${C.callMinutes} min. <button type="button" data-act="reset">Restore example</button></p>
       </div>
     </div>`;
   }
@@ -112,6 +119,10 @@
 
   function daySlots(p) {
     if (!p || p.id === "ex_sam") return [];
+    if (p.chosenSlots && p.chosenSlots.length) {
+      const now = Date.now();
+      return p.chosenSlots.map((s) => new Date(s)).filter((d) => d.getTime() > now + 20 * 60000);
+    }
     const now = new Date();
     const out = [];
     const seed = String(p.id).split("").reduce((n, c) => n + c.charCodeAt(0), 0);
@@ -206,7 +217,7 @@
       const openDesc = uiState.desc === r.id;
       const menu = uiState.menu === r.id ? `<div class="menu"><button type="button" data-act="status" data-id="${esc(r.id)}" data-status="${r.status === "paused" ? "active" : "paused"}">${r.status === "paused" ? "Resume" : "Pause"}</button></div>` : "";
       return `<tr data-go="request.html?id=${esc(r.id)}">
-        <td><a class="pname" href="request.html?id=${esc(r.id)}">${esc(r.title)}</a><button type="button" class="textbtn" data-act="desc" data-id="${esc(r.id)}">View description</button>${openDesc ? `<p class="sub">${esc((r.screening || []).slice(0, 3).join(" "))}</p>` : ""}</td>
+        <td><a class="pname" href="request.html?id=${esc(r.id)}">${esc(r.name || r.title)}</a><button type="button" class="textbtn" data-act="desc" data-id="${esc(r.id)}">View description</button>${openDesc ? `<p class="sub">${esc(r.title)}</p>` : ""}</td>
         <td>${c.received}${c.fresh ? ` <span class="pill">${c.fresh} new</span>` : ""}</td>
         <td>${c.scheduled}</td>
         <td>${c.completed}</td>
@@ -242,14 +253,16 @@
     while (seeds.length < 3) seeds.push("");
     const fields = seeds.map((s, i) => `<label class="field">Question ${i + 1}<input type="text" name="s${i + 1}" value="${esc(s)}" maxlength="300"></label>`).join("");
     const who = (fromReq && fromReq.who && fromReq.who.role) || "";
+    const presetName = (fromReq && (fromReq.name || fromReq.title)) || pre;
     return `<a class="back" href="index.html">Projects</a>
-      <h1>${fromCall ? "Talk to someone else about this" : "Request a new call"}</h1>
-      <p class="sub">Write the question, who does the work, and up to three things to ask.</p>
+      <h1>New project</h1>
+      <p class="sub">Name the project, write the question, who does the work, and up to three things to ask.</p>
       <form data-act="ask">
-        <label class="field">Your question<span>What do you need to understand?</span>
+        <label class="field">Project name<input type="text" name="name" value="${esc(presetName)}" placeholder="Find carriers" required ${fromReq ? "data-lock=\"1\"" : ""}></label>
+        <label class="field">What do you want to understand?<span>The question</span>
           <textarea name="q" required placeholder="How do freight brokers find new carriers?">${esc(pre)}</textarea>
         </label>
-        <label class="field">Who you want to talk to<input type="text" name="who" value="${esc(who)}" placeholder="Freight coordinator"></label>
+        <label class="field">Who do you want to talk to?<input type="text" name="who" value="${esc(who)}" placeholder="Freight coordinator"></label>
         ${fields}
         <div class="form-actions"><button class="btn" type="submit">Find people</button></div>
       </form>`;
@@ -333,7 +346,7 @@
     const doneRows = completed.map((b) => {
       const p = person(b.personId);
       const text = b.summary || b.notes || "No notes.";
-      return `<tr><td><span class="pname">${esc(p ? p.name : "Call")}</span><div class="role">${esc(when(b.completedAt || b.slot))}</div><div class="note">${esc(text)}</div><a class="textbtn" href="request-new.html?q=${encodeURIComponent(req.title)}&from=${esc(req.id)}">Talk to someone else about this</a></td></tr>`;
+      return `<tr><td><span class="pname">${esc(p ? p.name : "Call")}</span><div class="role">${esc(when(b.completedAt || b.slot))}</div><div class="note">${esc(text)}</div></td></tr>`;
     }).join("");
     const decRows = declined.map((p) => `<tr><td>${esc(p.name)}</td><td>${esc(p.role)}</td><td>${esc(p.employerType || "")}</td></tr>`).join("");
     let table = "";
@@ -343,8 +356,14 @@
     else table = `<table class="grid people"><thead><tr><th></th><th>Name</th><th>Company</th><th>Availability</th><th></th></tr></thead><tbody>${rows || "<tr><td colspan='5'>No one yet.</td></tr>"}</tbody></table>`;
     const who = uiState.panel && uiState.panel.request === req.id ? person(uiState.panel.person) : null;
     const drawer = who ? (uiState.panel.kind === "time" ? timePanel(req, who) : profilePanel(req, who)) : "";
+    const renaming = uiState.rename === req.id;
     return `<a class="back" href="index.html">Projects</a>
-      <h1>${esc(req.title)}</h1>
+      <div class="titleline">${renaming
+        ? `<form data-act="rename" class="rename"><input type="hidden" name="id" value="${esc(req.id)}"><input type="text" name="name" value="${esc(req.name || req.title)}" required><button class="btn" type="submit">Save</button></form>`
+        : `<h1>${esc(req.name || req.title)}</h1><button type="button" class="textbtn" data-act="rename" data-id="${esc(req.id)}" aria-label="Rename">✎ Rename</button>`}
+      </div>
+      <p class="sub">${esc(req.title)}</p>
+      <p class="more"><a class="btn secondary" href="request-new.html?q=${encodeURIComponent(req.title)}&from=${esc(req.id)}">Find more people</a></p>
       <div class="tabs">
         <button type="button" class="${tab === "open" ? "on" : ""}" data-act="stab" data-tab="open">Not scheduled (${peopleFor(req).filter((x) => !taken.has(x.p.id)).length})</button>
         <button type="button" class="${tab === "scheduled" ? "on" : ""}" data-act="stab" data-tab="scheduled">Scheduled (${scheduled.length})</button>
@@ -404,7 +423,7 @@
         <h1>${esc(who ? who.name : "Call")}</h1>
         <p class="sub">${esc(when(b.completedAt || b.slot))}</p>
         <div class="note">${esc(b.summary || b.notes || "No notes.")}</div>
-        ${req ? `<div style="margin-top:16px"><a class="btn" href="request-new.html?q=${encodeURIComponent(req.title)}">Talk to someone else about this</a></div>` : ""}`;
+        ${req ? `<div style="margin-top:16px"><a class="btn secondary" href="request.html?id=${esc(req.id)}">Back to the project</a></div>` : ""}`;
     }
     return `<a class="back" href="${req ? "request.html?id=" + esc(req.id) : "index.html"}">Back to the project</a>
       <h1>Notes</h1>
@@ -417,48 +436,147 @@
       </form>`;
   }
 
-  function inbox() {
-    const state = TL.store.get();
-    const taker = state.callTaker;
-    if (!taker) {
-      return `<h1>Taking a call</h1>
-        <p class="sub">Say what you do. Call requests that match stay in this browser. Example only. Nothing is emailed.</p>
-        <p class="ex">Example data</p>
-        <form data-act="taker">
-          <label class="field">Name<input type="text" name="name" required></label>
-          <label class="field">Email<input type="text" name="email" required></label>
-          <label class="field">Role<input type="text" name="role" placeholder="Freight coordinator" required></label>
-          <label class="field">Background<textarea name="background" placeholder="How you find carriers, cover a cancellation, or ask for a quote."></textarea></label>
-          <div class="form-actions"><button class="btn" type="submit">Save</button></div>
-        </form>`;
+  function offerTimes() {
+    const out = [];
+    const now = new Date();
+    for (let d = 0; d < 4 && out.length < 8; d++) {
+      const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
+      [9, 12, 15, 18].forEach((h) => {
+        const slot = new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, 0, 0);
+        if (slot.getTime() > now.getTime() + 30 * 60000) out.push(slot);
+      });
     }
-    const open = state.requests.filter((req) => {
-      const blob = (taker.role + " " + (taker.background || "")).toLowerCase();
-      const freight = /freight|broker|dispatch|ship|carrier|load|truck|logistic/.test(blob);
-      const hay = (req.title + " " + (req.who && req.who.role) + " " + (req.who && req.who.industry)).toLowerCase();
-      const words = blob.split(/\W+/).filter((w) => w.length > 3);
-      return freight || words.some((w) => hay.indexOf(w) >= 0);
-    });
-    const cards = open.map((req) => {
-      const mine = (req.answers && req.answers.ct_self) || [];
-      const qs = (req.screening || []).slice(0, 3);
-      const fields = qs.map((q, i) => `<label class="field">${esc(q)}<input type="text" name="s${i + 1}" value="${esc(mine[i] || "")}"></label>`).join("");
-      return `<article class="card"><h2 class="who">${esc(req.title)}</h2>
+    return out.slice(0, 8);
+  }
+
+  function answerPanel(req) {
+    const mine = (req.answers && req.answers.ct_self) || [];
+    const who = person("ct_self");
+    const picked = (who && who.chosenSlots) || [];
+    const fields = (req.screening || []).slice(0, 3).map((q, i) => `<label class="field">${esc(q)}<input type="text" name="s${i + 1}" value="${esc(mine[i] || "")}" required></label>`).join("");
+    const times = offerTimes().map((d) => {
+      const iso = d.toISOString();
+      return `<label><input type="checkbox" name="slot" value="${esc(iso)}" ${picked.indexOf(iso) >= 0 ? "checked" : ""}> ${esc(when(iso))}</label>`;
+    }).join("");
+    return `<div class="shade" data-act="close-panel"></div>
+      <aside class="drawer">
+        <button type="button" class="x" data-act="close-panel" aria-label="Close">×</button>
+        <h2>${esc(req.name || req.title)}</h2>
+        <p class="sub">${esc(req.title)}</p>
         <form data-act="screen">
           <input type="hidden" name="request" value="${esc(req.id)}">
-          ${fields}
-          <div class="form-actions">
-            <button class="btn" type="submit" name="choice" value="accept">Send answers</button>
-            <button class="btn secondary" type="submit" name="choice" value="decline">Decline</button>
-          </div>
-        </form></article>`;
-    }).join("");
-    const calls = state.bookings.filter((b) => b.personId === "ct_self").map((b) => `<article class="card"><h2 class="who">${esc(b.requestTitle)}</h2><p class="role">${esc(when(b.slot))} · ${esc(b.status)}</p><p class="sub">${money(C.expertPayoutUsd)} if the call happens. Example only. Nothing is paid.</p></article>`).join("");
-    return `<h1>Taking a call</h1>
-      <p class="sub">${esc(taker.name)}, ${esc(taker.role)}. Requests that match you.</p>
+          <input type="hidden" name="choice" value="accept">
+          ${fields || "<p class='sub'>No screener questions.</p>"}
+          <p class="field">Times you can talk</p>
+          <div class="checks">${times}</div>
+          <div class="form-actions"><button class="btn" type="submit">Answer &amp; accept</button></div>
+        </form>
+      </aside>`;
+  }
+
+  function takerSignup() {
+    return `<h1>Taking calls</h1>
+      <p class="sub">Say what you do. Requests from this browser show up here. Example only. Nothing is emailed.</p>
       <p class="ex">Example data</p>
-      <section class="section"><h2>Requests</h2>${cards || "<p class='sub'>No requests yet.</p>"}</section>
-      <section class="section"><h2>Scheduled</h2>${calls || "<p class='sub'>No calls yet.</p>"}</section>`;
+      <form data-act="taker">
+        <label class="field">Name<input type="text" name="name" required></label>
+        <label class="field">Email<input type="text" name="email" required></label>
+        <label class="field">Role<input type="text" name="role" placeholder="Freight coordinator" required></label>
+        <label class="field">Company type<input type="text" name="companyType" placeholder="Freight brokerage"></label>
+        <label class="field">Years<input type="text" name="years" inputmode="numeric" placeholder="6"></label>
+        <label class="field">Short bio<textarea name="background" placeholder="How you find carriers, cover a cancellation, or ask for a quote."></textarea></label>
+        <div class="form-actions"><button class="btn" type="submit">Save</button></div>
+      </form>`;
+  }
+
+  function takerRequests(state) {
+    const open = state.requests.filter((req) => req.status !== "paused" && (req.passed || []).indexOf("ct_self") < 0);
+    const rows = open.map((req) => {
+      const answered = req.answers && req.answers.ct_self && req.answers.ct_self.filter(Boolean).length;
+      return `<tr>
+        <td>${esc(req.name || req.title)}</td>
+        <td>${esc(req.title)}</td>
+        <td>${esc((req.who && req.who.role) || "")}</td>
+        <td>${money(C.expertPayoutUsd)} / ${C.callMinutes} min</td>
+        <td class="acts">${answered ? "<span class='tag'>Answered</span>" : ""}<button type="button" class="btn" data-act="answer" data-id="${esc(req.id)}">Answer &amp; accept</button><button type="button" class="xsmall" data-act="taker-no" data-id="${esc(req.id)}" aria-label="Decline">×</button></td>
+      </tr>`;
+    }).join("");
+    const panelReq = uiState.apanel && open.find((r) => r.id === uiState.apanel);
+    return `<h1>Requests</h1>
+      <p class="sub">Projects people want to talk about. ${money(C.expertPayoutUsd)} / ${C.callMinutes} min. Example only. Nothing is paid.</p>
+      <table class="grid"><thead><tr><th>Project</th><th>Question</th><th>Who they want</th><th>Payout</th><th></th></tr></thead>
+      <tbody>${rows || "<tr><td colspan='5'>No requests yet.</td></tr>"}</tbody></table>
+      ${panelReq ? answerPanel(panelReq) : ""}`;
+  }
+
+  function takerCalls(state) {
+    const tab = uiState.ctab || "upcoming";
+    const mine = state.bookings.filter((b) => b.personId === "ct_self");
+    const list = mine.filter((b) => tab === "completed" ? b.status !== "confirmed" : b.status === "confirmed");
+    const rows = list.map((b) => {
+      const req = TL.store.request(b.requestId);
+      return `<tr><td>${esc((req && (req.name || req.title)) || b.requestTitle)}</td><td>${esc(when(b.slot))}</td><td>${esc(b.status === "confirmed" ? "Upcoming" : "Completed")}</td></tr>`;
+    }).join("");
+    return `<h1>My calls</h1>
+      <div class="tabs">
+        <button type="button" class="${tab === "upcoming" ? "on" : ""}" data-act="ctab" data-tab="upcoming">Upcoming (${mine.filter((b) => b.status === "confirmed").length})</button>
+        <button type="button" class="${tab === "completed" ? "on" : ""}" data-act="ctab" data-tab="completed">Completed (${mine.filter((b) => b.status !== "confirmed").length})</button>
+      </div>
+      <table class="grid"><thead><tr><th>Project</th><th>When</th><th></th></tr></thead><tbody>${rows || "<tr><td colspan='3'>No calls yet.</td></tr>"}</tbody></table>`;
+  }
+
+  function takerEarnings(state) {
+    const mine = state.bookings.filter((b) => b.personId === "ct_self");
+    const done = mine.filter((b) => b.status === "completed");
+    const upcoming = mine.filter((b) => b.status === "confirmed");
+    const total = done.reduce((n, b) => n + TL.store.payoutInfo(b).amount, 0);
+    const rows = mine.map((b) => {
+      const pay = TL.store.payoutInfo(b);
+      const req = TL.store.request(b.requestId);
+      const amount = b.status === "completed" ? money(pay.amount) : "After the call";
+      return `<tr><td>${esc((req && (req.name || req.title)) || b.requestTitle)}</td><td>${esc(b.status === "confirmed" ? "Upcoming" : "Completed")}</td><td>${amount}</td></tr>`;
+    }).join("");
+    return `<h1>Earnings</h1>
+      <p class="sub">${money(C.expertPayoutUsd)} / ${C.callMinutes} min. Example only. Nothing is paid.</p>
+      <div class="summary">
+        <div><span>Upcoming</span><strong>${upcoming.length}</strong></div>
+        <div><span>Completed</span><strong>${done.length}</strong></div>
+        <div><span>Example total</span><strong>${money(total)}</strong></div>
+      </div>
+      <table class="grid"><thead><tr><th>Project</th><th>Status</th><th>Amount</th></tr></thead><tbody>${rows || "<tr><td colspan='3'>No calls yet.</td></tr>"}</tbody></table>`;
+  }
+
+  function takerProfile(state) {
+    const who = person("ct_self") || {};
+    const taker = state.callTaker || {};
+    const picked = who.chosenSlots || [];
+    const times = offerTimes().map((d) => {
+      const iso = d.toISOString();
+      return `<label><input type="checkbox" name="slot" value="${esc(iso)}" ${picked.indexOf(iso) >= 0 ? "checked" : ""}> ${esc(when(iso))}</label>`;
+    }).join("");
+    return `<h1>Profile</h1>
+      <p class="sub">This is what shows when someone looks at you.</p>
+      <form data-act="profile">
+        <label class="field">Name<input type="text" name="name" value="${esc(taker.name || "")}" required></label>
+        <label class="field">Email<input type="text" name="email" value="${esc(taker.email || "")}" required></label>
+        <label class="field">Role<input type="text" name="role" value="${esc(who.role || taker.role || "")}" required></label>
+        <label class="field">Company type<input type="text" name="companyType" value="${esc(who.employerType || taker.companyType || "")}"></label>
+        <label class="field">Years<input type="text" name="years" inputmode="numeric" value="${esc(String(who.years || taker.years || ""))}"></label>
+        <label class="field">Short bio<textarea name="background">${esc(who.bio || taker.background || "")}</textarea></label>
+        <p class="field">Availability</p>
+        <div class="checks">${times}</div>
+        <div class="form-actions"><button class="btn" type="submit">Save</button></div>
+      </form>`;
+  }
+
+  function inbox() {
+    const state = TL.store.get();
+    if (!state.callTaker) return takerSignup();
+    const view = qs("view") || "requests";
+    if (view === "calls") return takerCalls(state);
+    if (view === "earnings") return takerEarnings(state);
+    if (view === "profile") return takerProfile(state);
+    return takerRequests(state);
   }
 
   function payouts() {
@@ -552,7 +670,15 @@
     if (b.dataset.act === "star") { TL.store.toggleShortlist(b.dataset.request, b.dataset.person); paint(); return; }
     if (b.dataset.act === "profile") { uiState.panel = { kind: "profile", request: b.dataset.request, person: b.dataset.person }; paint(); return; }
     if (b.dataset.act === "pick") { uiState.panel = { kind: "time", request: b.dataset.request, person: b.dataset.person }; paint(); return; }
-    if (b.dataset.act === "close-panel") { uiState.panel = null; paint(); return; }
+    if (b.dataset.act === "close-panel") { uiState.panel = null; uiState.apanel = null; paint(); return; }
+    if (b.dataset.act === "rename") { uiState.rename = b.dataset.id; paint(); return; }
+    if (b.dataset.act === "answer") { uiState.apanel = b.dataset.id; paint(); return; }
+    if (b.dataset.act === "ctab") { uiState.ctab = b.dataset.tab; paint(); return; }
+    if (b.dataset.act === "taker-no") {
+      const res = TL.store.passPerson(b.dataset.id, "ct_self");
+      uiState.apanel = null;
+      return show(res.ok ? "Declined." : res.error, !res.ok);
+    }
     if (b.dataset.act === "confirm-slot") {
       const res = TL.store.scheduleCall(b.dataset.request, b.dataset.person, b.dataset.slot);
       if (!res.ok) return show(res.error, true);
@@ -590,6 +716,11 @@
       const el = document.getElementById("projSearch");
       if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
     }
+    if (e.target.name === "q" && e.target.form && e.target.form.dataset.act === "ask") {
+      const name = e.target.form.querySelector("[name=name]");
+      if (name && name.dataset.lock !== "1") name.value = e.target.value;
+    }
+    if (e.target.name === "name" && e.target.form && e.target.form.dataset.act === "ask" && e.isTrusted) e.target.dataset.lock = "1";
     if (e.target.id === "peopleSearch") {
       uiState.pq = e.target.value;
       paint();
@@ -609,7 +740,8 @@
       const base = TL.agents.SAMPLE_BRIEF;
       const screening = [fd.get("s1"), fd.get("s2"), fd.get("s3")].map((s) => String(s || "").trim()).filter(Boolean).slice(0, 3);
       const who = String(fd.get("who") || "").trim();
-      const res = TL.store.createRequest(Object.assign({}, base, { title: q, decision: q, role: who || base.role, screening: screening.length ? screening : base.screening.slice(0, 3) }));
+      const name = String(fd.get("name") || "").trim() || q;
+      const res = TL.store.createRequest(Object.assign({}, base, { title: q, decision: q, name: name, role: who || base.role, screening: screening.length ? screening : base.screening.slice(0, 3) }));
       if (!res.ok) return show(res.error, true);
       return go("request.html?id=" + res.id, "Here are people for that question.");
     }
@@ -623,16 +755,41 @@
       return show(res.ok ? "Saved." : res.error, !res.ok);
     }
     if (form.dataset.act === "taker") {
-      const res = TL.store.saveCallTaker({ name: fd.get("name"), email: fd.get("email"), role: fd.get("role"), background: fd.get("background") });
+      const res = TL.store.saveCallTaker({
+        name: fd.get("name"),
+        email: fd.get("email"),
+        role: fd.get("role"),
+        background: fd.get("background"),
+        companyType: fd.get("companyType"),
+        years: fd.get("years"),
+      });
       return show(res.ok ? "Saved." : res.error, !res.ok);
+    }
+    if (form.dataset.act === "rename") {
+      const res = TL.store.renameRequest(fd.get("id"), fd.get("name"));
+      uiState.rename = null;
+      return show(res.ok ? "Renamed." : res.error, !res.ok);
     }
     if (form.dataset.act === "screen") {
       const answers = [fd.get("s1"), fd.get("s2"), fd.get("s3")];
-      const accept = fd.get("choice") !== "decline";
-      const res = TL.store.saveAnswers(fd.get("request"), "ct_self", answers, accept);
+      const slots = fd.getAll("slot");
+      if (!slots.length) return show("Pick a time you can talk.", true);
+      const res = TL.store.saveAnswers(fd.get("request"), "ct_self", answers, true, slots);
       if (!res.ok) return show(res.error, true);
-      if (!accept) TL.store.passPerson(fd.get("request"), "ct_self");
-      return show(accept ? "Answers saved. They show on the project." : "Declined.");
+      uiState.apanel = null;
+      return show("Answers saved. They show on the project.");
+    }
+    if (form.dataset.act === "profile") {
+      const res = TL.store.saveCallTaker({
+        name: fd.get("name"),
+        email: fd.get("email"),
+        role: fd.get("role"),
+        background: fd.get("background"),
+        companyType: fd.get("companyType"),
+        years: fd.get("years"),
+        slots: fd.getAll("slot"),
+      });
+      return show(res.ok ? "Saved." : res.error, !res.ok);
     }
     if (form.dataset.act === "book") {
       const res = TL.store.book(fd.get("invite"), fd.get("slot"));
@@ -664,7 +821,8 @@
   function peopleList(req) {
     const people = peopleFor(req).map(({ p }) => personCard(req, p)).join("");
     return `<a class="back" href="index.html">Projects</a>
-      <h1>${esc(req.title)}</h1>
+      <h1>${esc(req.name || req.title)}</h1>
+      <p class="sub">${esc(req.title)}</p>
       <section class="section"><h2>People to talk to</h2>${people || "<p class='sub'>No one yet.</p>"}</section>`;
   }
 
@@ -676,7 +834,7 @@
       let req = id && TL.store.request(id);
       if (!req) {
         const brief = TL.agents.SAMPLE_BRIEF;
-        const res = TL.store.createRequest(Object.assign({}, brief, { title: q, decision: q, screening: (brief.screening || []).slice(0, 3) }));
+        const res = TL.store.createRequest(Object.assign({}, brief, { title: q, decision: q, name: q, screening: (brief.screening || []).slice(0, 3) }));
         if (!res.ok) {
           root.innerHTML = shell("home", `<h1>${esc(q)}</h1><p class="sub">${esc(res.error)}</p><p style="margin-top:16px"><a class="btn" href="index.html">Projects</a></p>`);
           return;

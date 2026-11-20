@@ -593,10 +593,13 @@
       }),
     ];
 
+    freight.name = "Find carriers";
+    cancel.name = "Cover cancellations";
+    quotes.name = "Freight quotes";
     [freight, cancel, quotes].forEach((req) => fillAnswers(req, people));
 
     const state = {
-      version: 6,
+      version: 7,
       session: { role: "buyer", forceOnboarding: false },
       buyer: buyer,
       expertId: "ex_maya",
@@ -642,7 +645,7 @@
     if (!raw) return persist(seed());
     try {
       const state = JSON.parse(raw);
-      if (!state || state.version !== 6 || !state.buyer || !state.pool) return persist(seed());
+      if (!state || state.version !== 7 || !state.buyer || !state.pool) return persist(seed());
       cached = state;
       return expire(state);
     } catch (e) {
@@ -959,6 +962,7 @@
       const state = load();
       const request = blankRequest(input, state.buyer, state.pool);
       request.screening = (request.screening || []).slice(0, 3);
+      request.name = clip(input.name, 140) || request.title;
       fillAnswers(request, state.pool);
       attachTaker(state, request);
       state.requests.unshift(request);
@@ -982,7 +986,9 @@
       const role = clip(input.role, 80);
       const background = clip(input.background, 400);
       if (!name || !email || !role) return fail("Add your name, email, and role.");
-      state.callTaker = { name: name, email: email, role: role, background: background };
+      const years = Math.max(0, parseInt(input.years, 10) || 0);
+      const companyType = clip(input.companyType, 80);
+      state.callTaker = { name: name, email: email, role: role, background: background, companyType: companyType, years: years || 2 };
       let who = state.pool.find((p) => p.id === "ct_self");
       if (!who) {
         who = {
@@ -991,12 +997,12 @@
           self: true,
           name: name,
           role: role,
-          years: 2,
-          yearsLabel: "2 yrs",
+          years: years || 2,
+          yearsLabel: (years || 2) + " yrs",
           fn: "Operations",
           industry: "Logistics",
           employer: "Signed up here",
-          employerType: "Freight",
+          employerType: companyType || "Freight",
           companySize: "",
           former: false,
           geography: "United States",
@@ -1014,13 +1020,29 @@
         who.name = name;
         who.role = role;
         who.bio = background || role;
+        if (companyType) who.employerType = companyType;
+        if (years) {
+          who.years = years;
+          who.yearsLabel = years + " yrs";
+        }
       }
+      if (Array.isArray(input.slots)) who.chosenSlots = input.slots.map((s) => clip(s, 40)).filter(Boolean).slice(0, 8);
       state.expertId = "ct_self";
       state.requests.forEach((req) => attachTaker(state, req));
       persist(state);
       return { ok: true };
     },
-    saveAnswers: function (requestId, personId, answers, accept) {
+    renameRequest: function (requestId, name) {
+      const state = load();
+      const request = requestById(state, requestId);
+      if (!request) return fail("Project not found.");
+      const next = clip(name, 140);
+      if (!next) return fail("Add a project name.");
+      request.name = next;
+      persist(state);
+      return { ok: true };
+    },
+    saveAnswers: function (requestId, personId, answers, accept, slots) {
       const state = load();
       const request = requestById(state, requestId);
       if (!request) return fail("Project not found.");
@@ -1028,6 +1050,8 @@
       const clean = (answers || []).map((s) => clip(s, 400)).slice(0, 3);
       if (accept && !clean.filter(Boolean).length) return fail("Write an answer first.");
       request.answers[personId] = clean;
+      const who = person(state, personId);
+      if (who && slots && slots.length) who.chosenSlots = slots.map((s) => clip(s, 40)).filter(Boolean).slice(0, 8);
       attachTaker(state, request);
       const now = new Date().toISOString();
       let inv = state.invitations.find((i) => i.requestId === requestId && i.personId === personId);
