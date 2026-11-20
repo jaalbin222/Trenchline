@@ -1031,6 +1031,25 @@
       persist(state);
       return { ok: true };
     },
+    toggleShortlist: function (requestId, personId) {
+      const state = load();
+      const request = requestById(state, requestId);
+      if (!request) return fail("Project not found.");
+      request.shortlist = request.shortlist || [];
+      const i = request.shortlist.indexOf(personId);
+      if (i >= 0) request.shortlist.splice(i, 1);
+      else request.shortlist.push(personId);
+      persist(state);
+      return { ok: true };
+    },
+    setStatus: function (requestId, status) {
+      const state = load();
+      const request = requestById(state, requestId);
+      if (!request) return fail("Project not found.");
+      request.status = status === "paused" ? "paused" : "active";
+      persist(state);
+      return { ok: true };
+    },
     scheduleCall: function (requestId, personId, slotIso) {
       const state = load();
       const request = requestById(state, requestId);

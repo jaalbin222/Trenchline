@@ -26,21 +26,29 @@
   function go(url, msg) { if (msg) flash(msg); location.href = url; }
   function show(text, bad) { banner = { text, bad: !!bad }; paint(); }
 
+  const uiState = { q: "", pq: "", listTab: "open", ptab: "open", onlyStar: false, panel: null, menu: null, desc: null, reqId: "" };
+
   function shell(page, body) {
-    const buyer = page === "home" || page === "dashboard" || page === "request" || page === "requestNew" || page === "book" || page === "call" || page === "signup";
-    const links = buyer
-      ? [["index.html", "Projects", "home"], ["inbox.html", "Taking a call", "inbox"]]
-      : [["inbox.html", "Invites", "inbox"], ["payouts.html", "Payouts", "payouts"], ["index.html", "Projects", "home"]];
+    const cal = page === "home" && qs("view") === "calendar";
+    const item = (href, label, on) => `<a class="${on ? "on" : ""}" href="${href}">${label}</a>`;
     const note = banner; banner = null;
     const flashed = takeFlash();
     const msg = note ? `<div class="notice ${note.bad ? "bad" : ""}">${esc(note.text)}</div>` : flashed ? `<div class="notice">${esc(flashed)}</div>` : "";
-    return `<div class="wrap" id="main">
-      <header class="top">
-        <a class="brand" href="index.html">Trenchline</a>
-        <nav class="nav">${links.map(([href, label, id]) => `<a class="${page === id || (page === "dashboard" && id === "home") ? "on" : ""}" href="${href}">${label}</a>`).join("")}</nav>
-      </header>
-      ${msg}${body}
-      <p class="foot">${money(C.pricePerCallUsd)} for 30 minutes. Example data stays in this browser. <button type="button" data-act="reset">Restore example</button></p>
+    return `<div class="app" id="main">
+      <aside class="side">
+        <a class="brand" href="index.html">trenchline</a>
+        <nav>
+          ${item("index.html", "Projects", (page === "home" || page === "request" || page === "requestNew" || page === "book" || page === "call") && !cal)}
+          ${item("inbox.html", "Taking a call", page === "inbox" || page === "expert" || page === "payouts" || page === "consent")}
+          ${item("index.html?view=calendar", "Calendar", cal)}
+        </nav>
+        <p class="ex">Example data</p>
+      </aside>
+      <div class="maincol">
+        <div class="topbar"><a class="btn" href="request-new.html">Request a new call</a></div>
+        ${msg}${body}
+        <p class="foot">${money(C.pricePerCallUsd)} / 30 min. <button type="button" data-act="reset">Restore example</button></p>
+      </div>
     </div>`;
   }
 
@@ -48,7 +56,7 @@
     const passed = req.passed || [];
     return req.matches
       .filter((m) => !m.excluded && m.grade !== "X" && passed.indexOf(m.personId) < 0)
-      .slice(0, 3)
+      .slice(0, 6)
       .map((m) => ({ m, p: person(m.personId) }))
       .filter((x) => x.p);
   }
@@ -95,16 +103,115 @@
     return "Open";
   }
 
-  function projects() {
+  function daySlots(p) {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const out = [];
+    for (let d = 0; d <= 7; d += 1) {
+      const day = new Date(start.getTime() + d * 86400000);
+      (p.availability || []).forEach((slot) => {
+        const parts = String(slot).split(" ");
+        if (parts[0] !== days[day.getDay()]) return;
+        const hm = (parts[1] || "09:00").split(":");
+        const at = new Date(day.getTime());
+        at.setHours(Number(hm[0]), Number(hm[1]) || 0, 0, 0);
+        if (at.getTime() < Date.now() + 30 * 60000) return;
+        out.push(at);
+      });
+    }
+    return out;
+  }
+
+  function chipLabel(list) {
+    if (!list.length) return "";
+    const first = list[0];
+    const now = new Date();
+    const same = first.toDateString() === now.toDateString();
+    const tmr = new Date();
+    tmr.setDate(now.getDate() + 1);
+    const head = same ? "Today" : first.toDateString() === tmr.toDateString() ? "Tomorrow" : first.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    if (list.length === 1) return head + " " + first.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    const last = list[list.length - 1];
+    return head + " " + first.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) + "–" + last.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  }
+
+  function availabilityChips(p) {
+    const slots = daySlots(p);
+    const groups = [];
+    slots.forEach((at) => {
+      const key = at.toDateString();
+      let g = groups.find((x) => x.key === key);
+      if (!g) { g = { key: key, list: [] }; groups.push(g); }
+      g.list.push(at);
+    });
+    const soon = groups.filter((g) => g.list[0].getTime() < Date.now() + 3 * 86400000);
+    if (!soon.length) return `<span class="chip off">No availability in next 3 days</span>`;
+    return soon.slice(0, 2).map((g) => `<span class="chip">${esc(chipLabel(g.list))}</span>`).join("");
+  }
+
+  function sideOf(p) {
+    const s = (p.role + " " + (p.employerType || "") + " " + (p.topics || []).join(" ")).toLowerCase();
+    if (/shipper|shipping/.test(s)) return "Shipper side";
+    if (/carrier sales|^carrier|owner-operator/.test(s)) return "Carrier side";
+    if (/broker|coordinator|dispatch/.test(s)) return "Broker side";
+    return "";
+  }
+
+  function projectCounts(req) {
     const state = TL.store.get();
-    const cards = state.requests.map((r) => `<a class="card" href="request.html?id=${esc(r.id)}">
-      <h2>${esc(r.title)}</h2>
-      <p class="role">${esc(projectBlurb(r))}</p>
-    </a>`).join("");
+    const booked = new Set(state.bookings.filter((b) => b.requestId === req.id && b.status !== "cancelled").map((b) => b.personId));
+    const people = peopleFor(req);
+    return {
+      received: people.length + (req.passed || []).length,
+      fresh: people.filter((x) => !booked.has(x.p.id)).length,
+      scheduled: state.bookings.filter((b) => b.requestId === req.id && b.status === "confirmed").length,
+      completed: state.bookings.filter((b) => b.requestId === req.id && b.status !== "confirmed" && b.status !== "cancelled").length,
+    };
+  }
+
+  function projects() {
+    if (qs("view") === "calendar") {
+      const rows = TL.store.get().bookings.filter((b) => b.status === "confirmed" || b.status === "completed").map((b) => {
+        const p = person(b.personId);
+        return `<article class="card"><h2 class="who">${esc(b.requestTitle)}</h2><p class="role">${esc(p ? p.name : "")} · ${esc(when(b.slot))} · ${esc(b.status)}</p></article>`;
+      }).join("");
+      return `<h1>Calendar</h1>${rows || "<p class='sub'>No calls yet.</p>"}`;
+    }
+    const state = TL.store.get();
+    const openOn = uiState.listTab !== "closed";
+    const q = (uiState.q || "").toLowerCase();
+    const rows = state.requests.filter((r) => {
+      const paused = r.status === "paused";
+      if (openOn ? paused : !paused) return false;
+      return !q || r.title.toLowerCase().indexOf(q) >= 0;
+    }).map((r) => {
+      const c = projectCounts(r);
+      const openDesc = uiState.desc === r.id;
+      const menu = uiState.menu === r.id ? `<div class="menu"><button type="button" data-act="status" data-id="${esc(r.id)}" data-status="${r.status === "paused" ? "active" : "paused"}">${r.status === "paused" ? "Resume" : "Pause"}</button></div>` : "";
+      return `<tr data-go="request.html?id=${esc(r.id)}">
+        <td><a class="pname" href="request.html?id=${esc(r.id)}">${esc(r.title)}</a><button type="button" class="textbtn" data-act="desc" data-id="${esc(r.id)}">View description</button>${openDesc ? `<p class="sub">${esc((r.screening || []).slice(0, 3).join(" "))}</p>` : ""}</td>
+        <td>${c.received}${c.fresh ? ` <span class="pill">${c.fresh} new</span>` : ""}</td>
+        <td>${c.scheduled}</td>
+        <td>${c.completed}</td>
+        <td>${esc(r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "")}</td>
+        <td class="status">${r.status === "paused" ? "Paused" : "Active"} <button type="button" class="textbtn" data-act="menu" data-id="${esc(r.id)}" aria-label="Project menu">···</button>${menu}</td>
+      </tr>`;
+    }).join("");
+    const nOpen = state.requests.filter((r) => r.status !== "paused").length;
+    const nClosed = state.requests.length - nOpen;
     const acct = state.buyer || {};
-    return `<div class="rowhead"><div><h1>Projects</h1><p class="ex">Example data</p></div>
-      <a class="btn" href="request-new.html">Request a new call</a></div>${cards || "<p class='sub'>No projects yet.</p>"}
-      <form data-act="account" class="account"><p class="ex">Your name and email stay in this browser.</p>
+    return `<h1>Projects</h1>
+      <div class="tabs">
+        <button type="button" class="${openOn ? "on" : ""}" data-act="ptab" data-tab="open">Open (${nOpen})</button>
+        <button type="button" class="${openOn ? "" : "on"}" data-act="ptab" data-tab="closed">Closed (${nClosed})</button>
+        <input id="projSearch" type="text" placeholder="Search" value="${esc(uiState.q || "")}">
+      </div>
+      <table class="grid">
+        <thead><tr><th>Project</th><th>People</th><th>Scheduled</th><th>Completed</th><th>Updated</th><th>Status</th></tr></thead>
+        <tbody>${rows || "<tr><td colspan='6'>No projects.</td></tr>"}</tbody>
+      </table>
+      <form data-act="account" class="account">
         <label class="field">Name<input type="text" name="name" value="${esc(acct.name || "")}" required></label>
         <label class="field">Email<input type="text" name="email" value="${esc(acct.email || "")}" required></label>
         <div class="form-actions"><button class="btn secondary" type="submit">Save</button></div>
@@ -132,29 +239,106 @@
       </form>`;
   }
 
+  function slotGroups(p) {
+    const groups = [];
+    daySlots(p).forEach((at) => {
+      const key = at.toDateString();
+      let g = groups.find((x) => x.key === key);
+      if (!g) { g = { key: key, label: chipLabel([at]).replace(/\s+\d.*$/, ""), list: [] }; groups.push(g); }
+      g.list.push(at);
+    });
+    return groups;
+  }
+
+  function profilePanel(req, p) {
+    const pairs = pairsFor(req, p.id).map((x) => `<div class="qa"><p class="q">${esc(x.q)}</p><p>${esc(x.a || "No answer yet.")}</p></div>`).join("");
+    return `<aside class="drawer"><button type="button" class="x" data-act="close-panel" aria-label="Close">×</button>
+      <h2 class="who">${esc(p.name)}</h2>
+      <p class="role">${esc(p.role)} · ${esc(p.employerType || "")} · ${esc(p.yearsLabel)}</p>
+      <p class="bio">${esc(p.bio || "")}</p>
+      ${pairs}</aside>`;
+  }
+
+  function timePanel(req, p) {
+    const groups = [];
+    daySlots(p).forEach((at) => {
+      const key = at.toDateString();
+      let g = groups.find((x) => x.key === key);
+      if (!g) {
+        const label = at.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+        g = { key: key, label: label, list: [] };
+        groups.push(g);
+      }
+      g.list.push(at);
+    });
+    const body = groups.map((g) => `<div class="day"><h3>${esc(g.label)}</h3>${g.list.map((at) => `<button type="button" class="slot" data-act="confirm-slot" data-request="${esc(req.id)}" data-person="${esc(p.id)}" data-slot="${esc(at.toISOString())}">${esc(at.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }))}</button>`).join("")}</div>`).join("");
+    return `<aside class="drawer"><button type="button" class="x" data-act="close-panel" aria-label="Close">×</button>
+      <h2>Pick a time</h2>
+      <p class="sub">${esc(p.name)} · ${money(C.pricePerCallUsd)} / 30 min</p>
+      ${body || "<p class='sub'>No open times.</p>"}</aside>`;
+  }
+
   function project() {
     const req = TL.store.request(qs("id"));
     if (!req) return `<h1>That project isn’t here.</h1><a class="btn" href="index.html">Projects</a>`;
+    if (uiState.reqId !== req.id) {
+      uiState.reqId = req.id;
+      uiState.ptab = "open";
+      uiState.onlyStar = false;
+      uiState.pq = "";
+      uiState.panel = null;
+    }
     const state = TL.store.get();
-    const people = peopleFor(req).map(({ p }) => personCard(req, p)).join("");
-    const passed = (req.passed || []).map(person).filter(Boolean).map((p) => `<p class="role">${esc(p.name)} · ${esc(p.role)}</p>`).join("");
-    const calls = state.bookings.filter((b) => b.requestId === req.id);
-    const upcoming = calls.filter((b) => b.status === "confirmed").map((b) => {
-      const p = person(b.personId);
-      return `<article class="card"><h2 class="who">${esc(p ? p.name : "Call")} · ${esc(when(b.slot))}</h2><p class="sub">Scheduled. ${money(C.pricePerCallUsd)} for 30 minutes. Example only.</p><div style="margin-top:12px"><a class="btn" href="call.html?booking=${esc(b.id)}">Mark done</a></div></article>`;
+    const calls = state.bookings.filter((b) => b.requestId === req.id && b.status !== "cancelled");
+    const scheduled = calls.filter((b) => b.status === "confirmed");
+    const completed = calls.filter((b) => b.status !== "confirmed");
+    const taken = new Set(calls.map((b) => b.personId));
+    const stars = req.shortlist || [];
+    let people = peopleFor(req).filter((x) => !taken.has(x.p.id));
+    const declined = (req.passed || []).map(person).filter(Boolean);
+    const q = (uiState.pq || "").toLowerCase();
+    if (q) people = people.filter((x) => (x.p.name + " " + x.p.role).toLowerCase().indexOf(q) >= 0);
+    if (uiState.onlyStar) people = people.filter((x) => stars.indexOf(x.p.id) >= 0);
+    const tab = uiState.ptab || "open";
+    const rows = people.map(({ p }) => {
+      const side = sideOf(p);
+      return `<tr>
+        <td><button type="button" class="star ${stars.indexOf(p.id) >= 0 ? "on" : ""}" data-act="star" data-request="${esc(req.id)}" data-person="${esc(p.id)}" aria-label="Shortlist">${stars.indexOf(p.id) >= 0 ? "★" : "☆"}</button></td>
+        <td><button type="button" class="pname" data-act="profile" data-request="${esc(req.id)}" data-person="${esc(p.id)}">${esc(p.name)}</button><div class="role">${esc(p.role)} · ${esc(p.yearsLabel)}</div></td>
+        <td>${esc(p.employerType || "")}${side ? `<div><span class="tag">${esc(side)}</span></div>` : ""}</td>
+        <td class="avails">${availabilityChips(p)}</td>
+        <td class="act"><button type="button" class="btn" data-act="pick" data-request="${esc(req.id)}" data-person="${esc(p.id)}">Request</button><button type="button" class="xsmall" data-act="pass" data-request="${esc(req.id)}" data-person="${esc(p.id)}" aria-label="Not a fit">×</button><div class="price">${money(C.pricePerCallUsd)} / 30 min</div></td>
+      </tr>`;
     }).join("");
-    const done = calls.filter((b) => b.status !== "confirmed").map((b) => {
+    const schedRows = scheduled.map((b) => {
+      const p = person(b.personId);
+      return `<tr><td><button type="button" class="pname" data-act="profile" data-request="${esc(req.id)}" data-person="${esc(b.personId)}">${esc(p ? p.name : "Call")}</button><div class="role">${esc(when(b.slot))}</div></td><td>${money(C.pricePerCallUsd)} / 30 min</td><td><a class="btn" href="call.html?booking=${esc(b.id)}">Mark done</a></td></tr>`;
+    }).join("");
+    const doneRows = completed.map((b) => {
       const p = person(b.personId);
       const text = b.summary || b.notes || "No notes.";
-      return `<article class="card"><h2 class="who">${esc(p ? p.name : "Call")}</h2><p class="role">${esc(when(b.completedAt || b.slot))} · ${esc(b.status === "no-show" ? "No one joined" : b.status === "compliance-ended" ? "Ended to keep something confidential" : "Completed")}</p><div class="note">${esc(text)}</div><div style="margin-top:12px"><a class="btn secondary" href="request-new.html?q=${encodeURIComponent(req.title)}&from=${esc(req.id)}">Talk to someone else about this</a></div></article>`;
+      return `<tr><td><span class="pname">${esc(p ? p.name : "Call")}</span><div class="role">${esc(when(b.completedAt || b.slot))}</div><div class="note">${esc(text)}</div><a class="textbtn" href="request-new.html?q=${encodeURIComponent(req.title)}&from=${esc(req.id)}">Talk to someone else about this</a></td></tr>`;
     }).join("");
+    const decRows = declined.map((p) => `<tr><td>${esc(p.name)}</td><td>${esc(p.role)}</td><td>${esc(p.employerType || "")}</td></tr>`).join("");
+    let table = "";
+    if (tab === "scheduled") table = `<table class="grid"><thead><tr><th>Call</th><th>Price</th><th></th></tr></thead><tbody>${schedRows || "<tr><td colspan='3'>No calls scheduled.</td></tr>"}</tbody></table>`;
+    else if (tab === "done") table = `<table class="grid"><tbody>${doneRows || "<tr><td>No completed calls.</td></tr>"}</tbody></table>`;
+    else if (tab === "declined") table = `<table class="grid"><thead><tr><th>Name</th><th>Role</th><th>Company</th></tr></thead><tbody>${decRows || "<tr><td colspan='3'>No one yet.</td></tr>"}</tbody></table>`;
+    else table = `<table class="grid people"><thead><tr><th></th><th>Name</th><th>Company</th><th>Availability</th><th></th></tr></thead><tbody>${rows || "<tr><td colspan='5'>No one yet.</td></tr>"}</tbody></table>`;
+    const who = uiState.panel && uiState.panel.request === req.id ? person(uiState.panel.person) : null;
+    const drawer = who ? (uiState.panel.kind === "time" ? timePanel(req, who) : profilePanel(req, who)) : "";
     return `<a class="back" href="index.html">Projects</a>
-      <div class="rowhead"><div><h1>${esc(req.title)}</h1></div>
-      <a class="btn" href="request-new.html">Request a new call</a></div>
-      <section class="section"><h2>People to talk to</h2>${people || "<p class='sub'>No one yet.</p>"}</section>
-      <section class="section"><h2>Scheduled</h2>${upcoming || "<p class='sub'>None scheduled.</p>"}</section>
-      <section class="section"><h2>Notes</h2>${done || "<p class='sub'>No notes yet.</p>"}</section>
-      <section class="section"><h2>Not a fit</h2>${passed || "<p class='sub'>No one yet.</p>"}</section>`;
+      <h1>${esc(req.title)}</h1>
+      <div class="tabs">
+        <button type="button" class="${tab === "open" ? "on" : ""}" data-act="stab" data-tab="open">Not scheduled (${peopleFor(req).filter((x) => !taken.has(x.p.id)).length})</button>
+        <button type="button" class="${tab === "scheduled" ? "on" : ""}" data-act="stab" data-tab="scheduled">Scheduled (${scheduled.length})</button>
+        <button type="button" class="${tab === "done" ? "on" : ""}" data-act="stab" data-tab="done">Completed (${completed.length})</button>
+        <button type="button" class="${tab === "declined" ? "on" : ""}" data-act="stab" data-tab="declined">Declined (${declined.length})</button>
+        <label class="check tiny"><input type="checkbox" data-act="onlystar" ${uiState.onlyStar ? "checked" : ""}> Only shortlisted</label>
+        <input id="peopleSearch" type="text" placeholder="Search" value="${esc(uiState.pq || "")}">
+      </div>
+      ${table}
+      ${drawer ? `<div class="shade" data-act="close-panel"></div>${drawer}` : ""}`;
   }
 
   function nextSlots() {
@@ -338,9 +522,28 @@
   }
 
   document.addEventListener("click", (e) => {
+    const row = e.target.closest("tr[data-go]");
+    if (row && !e.target.closest("a, button, input, label")) { location.href = row.dataset.go; return; }
     const b = e.target.closest("[data-act]");
     if (!b || b.type === "submit") return;
-    if (b.dataset.act === "reset") { TL.store.reset(); go("index.html", "Example restored."); return; }
+    if (b.dataset.act === "reset") { TL.store.reset(); uiState.panel = null; go("index.html", "Example restored."); return; }
+    if (b.dataset.act === "ptab") { uiState.listTab = b.dataset.tab; uiState.menu = null; paint(); return; }
+    if (b.dataset.act === "onlystar") { uiState.onlyStar = !!b.checked; paint(); return; }
+    if (b.dataset.act === "stab") { uiState.ptab = b.dataset.tab; paint(); return; }
+    if (b.dataset.act === "desc") { uiState.desc = uiState.desc === b.dataset.id ? null : b.dataset.id; paint(); return; }
+    if (b.dataset.act === "menu") { uiState.menu = uiState.menu === b.dataset.id ? null : b.dataset.id; paint(); return; }
+    if (b.dataset.act === "status") { TL.store.setStatus(b.dataset.id, b.dataset.status); uiState.menu = null; paint(); return; }
+    if (b.dataset.act === "star") { TL.store.toggleShortlist(b.dataset.request, b.dataset.person); paint(); return; }
+    if (b.dataset.act === "profile") { uiState.panel = { kind: "profile", request: b.dataset.request, person: b.dataset.person }; paint(); return; }
+    if (b.dataset.act === "pick") { uiState.panel = { kind: "time", request: b.dataset.request, person: b.dataset.person }; paint(); return; }
+    if (b.dataset.act === "close-panel") { uiState.panel = null; paint(); return; }
+    if (b.dataset.act === "confirm-slot") {
+      const res = TL.store.scheduleCall(b.dataset.request, b.dataset.person, b.dataset.slot);
+      if (!res.ok) return show(res.error, true);
+      uiState.panel = null;
+      uiState.ptab = "scheduled";
+      return show("Call scheduled.");
+    }
     if (b.dataset.act === "pass") {
       const res = TL.store.passPerson(b.dataset.request, b.dataset.person);
       return show(res.ok ? "Moved to not a fit." : res.error, !res.ok);
@@ -361,6 +564,21 @@
     if (b.dataset.act === "credits") {
       TL.store.addCredits(4);
       return show("Added example credits.");
+    }
+  });
+
+  document.addEventListener("input", (e) => {
+    if (e.target.id === "projSearch") {
+      uiState.q = e.target.value;
+      paint();
+      const el = document.getElementById("projSearch");
+      if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+    }
+    if (e.target.id === "peopleSearch") {
+      uiState.pq = e.target.value;
+      paint();
+      const el = document.getElementById("peopleSearch");
+      if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
     }
   });
 
