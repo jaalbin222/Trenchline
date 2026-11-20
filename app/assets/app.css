@@ -21,6 +21,8 @@ button{cursor:pointer}
 .side-label{margin:14px 10px 2px;font-size:12px;font-weight:650;color:var(--muted)}
 .side nav a{color:var(--muted);padding:8px 10px;border-radius:10px;font-weight:550;font-size:14px}
 .side nav a.on,.side nav a:hover{color:var(--ink);background:rgba(21,21,19,.05)}
+.side nav a.switchlink{font-size:12px;font-weight:500;margin-top:10px;color:var(--g);background:none}
+.side nav a.switchlink:hover{background:none;text-decoration:underline}
 .maincol{flex:1;min-width:0;padding:18px 22px 48px}
 .topbar{display:flex;justify-content:flex-end;margin-bottom:18px}
 .tabs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0}

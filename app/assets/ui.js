@@ -31,6 +31,7 @@
   function shell(page, body) {
     const cal = page === "home" && qs("view") === "calendar";
     const item = (href, label, on) => `<a class="${on ? "on" : ""}" href="${href}">${label}</a>`;
+    const taking = page === "inbox" || page === "expert" || page === "payouts" || page === "consent";
     const note = banner; banner = null;
     const flashed = takeFlash();
     const msg = note ? `<div class="notice ${note.bad ? "bad" : ""}">${esc(note.text)}</div>` : flashed ? `<div class="notice">${esc(flashed)}</div>` : "";
@@ -38,23 +39,23 @@
       <aside class="side">
         <a class="brand" href="index.html">trenchline</a>
         <nav>
-          ${page === "inbox" || page === "expert" || page === "payouts" || page === "consent"
+          ${taking
             ? `<p class="side-label">Taking calls</p>
                ${item("inbox.html", "Requests", (qs("view") || "requests") === "requests")}
                ${item("inbox.html?view=calls", "My calls", qs("view") === "calls")}
                ${item("inbox.html?view=earnings", "Earnings", qs("view") === "earnings")}
                ${item("inbox.html?view=profile", "Profile", qs("view") === "profile")}
-               ${item("index.html", "Projects", false)}`
+               <a class="switchlink" href="index.html">Switch to founder view</a>`
             : `${item("index.html", "Projects", (page === "home" || page === "request" || page === "requestNew" || page === "book" || page === "call") && !cal)}
                ${item("index.html?view=calendar", "Calendar", cal)}
-               ${item("inbox.html", "Taking calls", false)}`}
+               <a class="switchlink" href="inbox.html">Switch to taking calls</a>`}
         </nav>
         <p class="ex">Example data</p>
       </aside>
       <div class="maincol">
-        <div class="topbar"><a class="btn" href="request-new.html">New project</a></div>
+        ${taking ? "" : `<div class="topbar"><a class="btn" href="request-new.html">New project</a></div>`}
         ${msg}${body}
-        <p class="foot">${money(page === "inbox" || page === "expert" || page === "payouts" || page === "consent" ? C.expertPayoutUsd : C.pricePerCallUsd)} / ${C.callMinutes} min. <button type="button" data-act="reset">Restore example</button></p>
+        <p class="foot">${money(taking ? C.expertPayoutUsd : C.pricePerCallUsd)} / ${C.callMinutes} min. <button type="button" data-act="reset">Restore example</button></p>
       </div>
     </div>`;
   }
