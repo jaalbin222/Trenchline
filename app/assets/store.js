@@ -60,7 +60,7 @@
     return people.map((p) => ({
       id: p[0],
       example: true,
-      self: p[14],
+      self: p[15] === true,
       name: p[1],
       role: p[2],
       years: p[3],
@@ -75,7 +75,7 @@
       channel: p[12],
       topics: p[13],
       wont: "Employer name, customers, internal systems, pricing, and anything confidential or non-public.",
-      bio: p[15],
+      bio: p[14],
       availability: avail.slice(),
       timezone: "America/Toronto",
       onboarded: true,
@@ -365,7 +365,7 @@
     [freight, cancel, quotes].forEach((req) => fillAnswers(req, people));
 
     const state = {
-      version: 3,
+      version: 4,
       session: { role: "buyer", forceOnboarding: false },
       buyer: buyer,
       expertId: "ex_maya",
@@ -411,7 +411,7 @@
     if (!raw) return persist(seed());
     try {
       const state = JSON.parse(raw);
-      if (!state || state.version !== 3 || !state.buyer || !state.pool) return persist(seed());
+      if (!state || state.version !== 4 || !state.buyer || !state.pool) return persist(seed());
       cached = state;
       return expire(state);
     } catch (e) {
