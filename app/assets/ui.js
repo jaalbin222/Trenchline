@@ -47,7 +47,7 @@
   function peopleFor(req) {
     return req.matches
       .filter((m) => !m.excluded && m.grade !== "X")
-      .slice(0, 5)
+      .slice(0, 3)
       .map((m) => ({ m, p: person(m.personId) }))
       .filter((x) => x.p);
   }
@@ -80,24 +80,28 @@
   function projects() {
     const state = TL.store.get();
     const cards = state.requests.map((r) => `<a class="card" href="request.html?id=${esc(r.id)}">
-      <h2 style="font-size:18px;font-weight:650">${esc(r.title)} ${r.example ? '<span class="ex">Example</span>' : ""}</h2>
-      <p class="role" style="color:var(--muted);margin-top:4px">${esc(projectBlurb(r))}</p>
+      <h2>${esc(r.title)}</h2>
+      <p class="role">${esc(projectBlurb(r))}</p>
     </a>`).join("");
-    return `<div class="rowhead"><div><h1>Projects</h1><p class="sub">Each project is one question. Open it to see who you can talk to, and the calls already on the calendar.</p></div>
+    return `<div class="rowhead"><div><h1>Projects</h1><p class="sub">One question each, all in freight. These three are examples.</p></div>
       <a class="btn" href="request-new.html">Request a new call</a></div>${cards || "<p class='sub'>No projects yet.</p>"}`;
   }
 
   function ask() {
-    const pre = qs("q") || TL.agents.SAMPLE_BRIEF.title;
+    const pre = qs("q") || "";
     const fromCall = !!qs("q");
+    const seeds = (TL.agents.SAMPLE_BRIEF.screening || []).slice(0, 3);
+    while (seeds.length < 3) seeds.push("");
+    const fields = seeds.map((s, i) => `<label class="field">Question ${i + 1}<input type="text" name="s${i + 1}" value="${esc(fromCall ? "" : s)}" maxlength="300"></label>`).join("");
     return `<a class="back" href="index.html">Projects</a>
       <h1>${fromCall ? "Talk to someone else about this" : "Request a new call"}</h1>
-      <p class="sub">${fromCall ? "Parker will look for other people on the same question." : "Write the question. Parker will come back with people who do that work."} ${fromCall ? "" : "An example is filled in."}</p>
-      <form data-act="ask" style="max-width:640px">
+      <p class="sub">${fromCall ? "Same question. We will look for other people who do this work." : "Write the question, and up to three things to ask on the call."}</p>
+      <form data-act="ask">
         <label class="field">Your question<span>What do you need to understand?</span>
-          <textarea name="q" required>${esc(pre)}</textarea>
+          <textarea name="q" required placeholder="How do freight brokers find new carriers?">${esc(pre)}</textarea>
         </label>
-        <div style="margin-top:16px"><button class="btn" type="submit">Find people</button></div>
+        ${fields}
+        <div class="form-actions"><button class="btn" type="submit">Find people</button></div>
       </form>`;
   }
 
@@ -111,7 +115,7 @@
       if (booking && booking.status === "confirmed") action = `<a class="btn secondary" href="call.html?booking=${esc(booking.id)}">Scheduled</a>`;
       else if (booking) action = `<span class="ex">Already spoke</span>`;
       else if (inv && inv.status === "pending") action = `<span class="ex">Waiting for them to accept</span>`;
-      return `<article class="card"><div class="person"><div class="init">${esc(initials(p.name))}</div><div><h2>${esc(p.name)} ${p.example ? '<span class="ex">Example</span>' : ""}</h2><p class="role">${esc(why(p))}</p></div><div class="actions">${action}</div></div></article>`;
+      return `<article class="card"><div class="person"><div class="init">${esc(initials(p.name))}</div><div><h2>${esc(p.name)}</h2><p class="role">${esc(why(p))}</p></div><div class="actions">${action}</div></div></article>`;
     }).join("");
     const calls = state.bookings.filter((b) => b.requestId === req.id);
     const upcoming = calls.filter((b) => b.status === "confirmed").map((b) => {
@@ -121,17 +125,16 @@
     const done = calls.filter((b) => b.status !== "confirmed").map((b) => {
       const p = person(b.personId);
       const text = b.summary || b.notes || "No notes.";
-      return `<article class="card"><h2 style="font-size:17px">${esc(p ? p.name : "Call")} ${b.example ? '<span class="ex">Example</span>' : ""}</h2><p class="role" style="color:var(--muted)">${esc(when(b.completedAt || b.slot))} · ${esc(b.status === "no-show" ? "No one joined" : b.status === "compliance-ended" ? "Ended to keep something confidential" : "Completed")}</p><div class="note">${esc(text)}</div><div style="margin-top:12px"><a class="btn secondary" href="request-new.html?q=${encodeURIComponent(req.title)}">Talk to someone else about this</a></div></article>`;
+      return `<article class="card"><h2>${esc(p ? p.name : "Call")}</h2><p class="role">${esc(when(b.completedAt || b.slot))} · ${esc(b.status === "no-show" ? "No one joined" : b.status === "compliance-ended" ? "Ended to keep something confidential" : "Completed")}</p><div class="note">${esc(text)}</div><div style="margin-top:12px"><a class="btn secondary" href="request-new.html?q=${encodeURIComponent(req.title)}">Talk to someone else about this</a></div></article>`;
     }).join("");
-    const top = peopleFor(req)[0];
-    const parker = top ? `Parker: I’d start with ${top.p.name.split(" ")[0]}. ${top.p.role}, ${top.p.yearsLabel}.` : "Parker hasn’t found anyone for this yet.";
+    const questions = (req.screening || []).slice(0, 3).map((s) => `<li>${esc(s)}</li>`).join("");
     return `<a class="back" href="index.html">Projects</a>
-      <div class="rowhead"><div><h1>${esc(req.title)} ${req.example ? '<span class="ex">Example</span>' : ""}</h1>${req.decision && req.decision !== req.title ? `<p class="sub">${esc(req.decision)}</p>` : ""}</div>
+      <div class="rowhead"><div><h1>${esc(req.title)}</h1></div>
       <a class="btn" href="request-new.html">Request a new call</a></div>
-      <div class="msg"><b>Parker</b><p>${esc(parker)}</p></div>
       <section class="section"><h2>People to talk to</h2>${people || "<p class='sub'>No one yet.</p>"}</section>
+      ${questions ? `<section class="section"><h2>Questions</h2><ol class="qs">${questions}</ol></section>` : ""}
       <section class="section"><h2>Scheduled</h2>${upcoming || "<p class='sub'>None scheduled.</p>"}</section>
-      <section class="section"><h2>Completed</h2>${done || "<p class='sub'>No completed calls.</p>"}</section>`;
+      <section class="section"><h2>Notes</h2>${done || "<p class='sub'>No notes yet.</p>"}</section>`;
   }
 
   function book() {
@@ -195,7 +198,7 @@
       }
       return `<article class="card"><h2 style="font-size:17px">${esc(req ? req.title : "Call")}</h2><p class="sub">${esc(inv.status)}</p></article>`;
     }).join("");
-    return `<div class="rowhead"><div><h1>Invites</h1><p class="sub">${esc(who.name)}, example profile. Accept or decline. The client books the time.</p></div></div>
+    return `<div class="rowhead"><div><h1>Invites</h1><p class="sub">${esc(who.name)}. Accept or decline. They book the time.</p></div></div>
       ${cards || "<p class='sub'>No invites.</p>"}`;
   }
 
@@ -307,7 +310,8 @@
       const q = String(fd.get("q") || "").trim();
       if (!q) return show("Write the question.", true);
       const base = TL.agents.SAMPLE_BRIEF;
-      const res = TL.store.createRequest(Object.assign({}, base, { title: q, decision: q }));
+      const screening = [fd.get("s1"), fd.get("s2"), fd.get("s3")].map((s) => String(s || "").trim()).filter(Boolean).slice(0, 3);
+      const res = TL.store.createRequest(Object.assign({}, base, { title: q, decision: q, screening: screening.length ? screening : base.screening.slice(0, 3) }));
       if (!res.ok) return show(res.error, true);
       return go("request.html?id=" + res.id, "Here are people for that question.");
     }
@@ -344,7 +348,7 @@
       let action = `<button class="btn" type="button" data-act="book-person" data-request="${esc(req.id)}" data-person="${esc(p.id)}">Book call</button>`;
       if (booking && booking.status === "confirmed") action = `<a class="btn secondary" href="call.html?booking=${esc(booking.id)}">Scheduled</a>`;
       else if (booking) action = `<span class="ex">Already spoke</span>`;
-      return `<article class="card"><div class="person"><div class="init">${esc(initials(p.name))}</div><div><h2>${esc(p.name)} ${p.example ? '<span class="ex">Example</span>' : ""}</h2><p class="role">${esc(why(p))}</p></div><div class="actions">${action}</div></div></article>`;
+      return `<article class="card"><div class="person"><div class="init">${esc(initials(p.name))}</div><div><h2>${esc(p.name)}</h2><p class="role">${esc(why(p))}</p></div><div class="actions">${action}</div></div></article>`;
     }).join("");
     return `<a class="back" href="index.html">Projects</a>
       <h1>${esc(req.title)}</h1>
@@ -358,7 +362,8 @@
       let id = sessionStorage.getItem(key);
       let req = id && TL.store.request(id);
       if (!req) {
-        const res = TL.store.createRequest(Object.assign({}, TL.agents.SAMPLE_BRIEF, { title: q, decision: q }));
+        const brief = TL.agents.SAMPLE_BRIEF;
+        const res = TL.store.createRequest(Object.assign({}, brief, { title: q, decision: q, screening: (brief.screening || []).slice(0, 3) }));
         if (!res.ok) {
           root.innerHTML = shell("home", `<h1>${esc(q)}</h1><p class="sub">${esc(res.error)}</p><p style="margin-top:16px"><a class="btn" href="index.html">Projects</a></p>`);
           return;

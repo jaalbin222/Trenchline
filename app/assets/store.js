@@ -45,7 +45,11 @@
       ["ex_marcus", "Marcus T.", "Payroll accountant", 3, "3 yrs", "Finance", "Financial services", "Lakeshore Credit Union", "Regional credit union", "51–200", false, "United States", "linkedin", ["payroll reconciliation", "tax filings", "exceptions"], "Reconciles payroll for a credit union with a few dozen business members.", false],
       ["ex_sofia", "Sofia M.", "KYC analyst", 2, "1.5 yrs", "Compliance", "Financial services", "Field & Pine Bank", "Retail bank", "1,000+", false, "United States", "email", ["KYC refresh", "periodic review", "evidence chase"], "Works the periodic KYC queue at a retail bank.", false],
       ["ex_lena", "Lena K.", "Ops analyst", 1, "1 yr", "Operations", "Payments", "Northline Payments", "Payments company", "51–200", false, "Canada", "email", ["merchant onboarding", "KYB", "exceptions"], "Onboards merchants and clears KYB exceptions.", false],
-      ["ex_dev", "Dev R.", "Junior accountant", 2, "2 yrs", "Finance", "Accounting", "Hart & Co.", "Accounting firm", "11–50", false, "Canada", "linkedin", ["month-end close", "bank recs", "client chase"], "Closes the books for small business clients.", false],
+      ["ex_maya", "Maya L.", "Freight coordinator", 3, "3 yrs", "Operations", "Logistics", "Harbor Freight Desk", "Freight brokerage", "51–200", false, "United States", "email", ["carriers", "lanes", "capacity"], "Finds trucks for shippers a few times a day.", true],
+      ["ex_sam", "Sam K.", "Carrier sales", 2, "2 yrs", "Sales", "Logistics", "Redlane", "Freight brokerage", "11–50", false, "United States", "email", ["carriers", "new lanes"], "Calls carriers when a lane is empty.", false],
+      ["ex_noah", "Noah P.", "Dispatcher", 2, "2 yrs", "Operations", "Logistics", "Northline", "Freight brokerage", "51–200", false, "United States", "email", ["cancellations", "loads", "drivers"], "Reassigns a truck when a load falls off the board.", false],
+      ["ex_elena", "Elena V.", "Shipping manager", 4, "4 yrs", "Operations", "Logistics", "Fieldstone Goods", "Shipper", "201–1,000", false, "United States", "email", ["quotes", "lanes", "brokers"], "Asks brokers for rates and picks who moves the freight.", false],
+      ["ex_dev", "Dev R.", "Accountant", 2, "2 yrs", "Finance", "Accounting", "Hart & Co.", "Accounting firm", "11–50", false, "Canada", "linkedin", ["month-end close", "bank recs", "client chase"], "Closes the books for small business clients.", false],
       ["ex_luis", "Luis G.", "Chargeback analyst", 4, "4 yrs", "Operations", "Fintech", "Pebble Neobank", "Neobank", "201–1,000", false, "United States", "email", ["chargebacks", "disputes", "evidence"], "Handles card disputes at a neobank.", false],
       ["ex_nina", "Nina V.", "Finance ops intern", 0.5, "<1 yr", "Finance", "Software", "Paperlane", "B2B SaaS", "11–50", false, "Canada", "linkedin", ["invoices", "collections", "CRM"], "Spent a co-op in finance ops at a software company.", false],
       ["ex_hana", "Hana S.", "AP coordinator", 1, "1 yr", "Finance", "Manufacturing", "Brightmill", "Mid-market manufacturer", "201–1,000", false, "United States", "email", ["accounts payable", "PO match", "vendor setup"], "Matches invoices to POs at a manufacturer. Horizontal example, not fintech.", false],
@@ -197,90 +201,73 @@
       return req;
     }
 
-    const payroll = story(
-      "req_payroll",
-      {
-        title: "Small-business payroll reconciliation",
-        decision: "Whether the wedge is the rounding gap between payroll reports and the ledger.",
-        role: "Payroll associate or payroll accountant",
-        fn: "Finance",
-        industry: "Financial services",
-        companyType: "Current practitioner at a company in the industry",
-        companySize: "51–200",
-        years: "0–4 years",
-        geography: "United States or Canada",
-        targetCompanies: "Regional credit unions",
-        avoidCompanies: ["MegaBank National"],
-        formerWithin: "",
-        calls: 4,
-        timeline: "3 weeks",
+    const shared = {
+      companyType: "Current practitioner at a company in the industry",
+      companySize: "11–200",
+      years: "0–4 years",
+      geography: "United States or Canada",
+      targetCompanies: "",
+      avoidCompanies: [],
+      formerWithin: "",
+      calls: 3,
+      timeline: "2 weeks",
+      profilesTo: "You",
+      calendarTo: "You",
+      updates: "rolling",
+    };
+
+    const freight = story(
+      "req_freight",
+      Object.assign({}, shared, {
+        title: "How do freight brokers find new carriers?",
+        decision: "How do freight brokers find new carriers?",
+        role: "Freight coordinator",
+        fn: "Operations",
+        industry: "Logistics",
         screening: [
-          "Walk through the last payroll you reconciled.",
-          "Where do the reports and the ledger disagree?",
-          "What do you still fix by hand?",
+          "Walk me through the last time you looked for a carrier.",
+          "What slowed that down?",
+          "What did you still do by hand?",
         ],
-        qualify: "Has reconciled payroll in the last 12 months.",
-        profilesTo: "Jamie L.",
-        calendarTo: "Jamie L.",
-        updates: "rolling",
-      },
+        qualify: "Has looked for a carrier in the last year.",
+      }),
       iso(now - 12 * day)
     );
 
-    const kyc = story(
-      "req_kyc",
-      {
-        title: "KYC refresh backlog at credit unions",
-        decision: "Whether a backlog of periodic KYC reviews is painful enough to buy software, or just a staffing problem.",
-        role: "KYC analyst or compliance analyst",
-        fn: "Compliance",
-        industry: "Financial services",
-        companyType: "Current practitioner at a company in the industry",
-        companySize: "201–1,000",
-        years: "0–4 years",
-        geography: "United States or Canada",
-        targetCompanies: "Credit unions and retail banks",
-        avoidCompanies: ["MegaBank National"],
-        formerWithin: "",
-        calls: 3,
-        timeline: "2 weeks",
+    const cancel = story(
+      "req_cancel",
+      Object.assign({}, shared, {
+        title: "How do dispatchers handle last-minute load cancellations?",
+        decision: "How do dispatchers handle last-minute load cancellations?",
+        role: "Dispatcher",
+        fn: "Operations",
+        industry: "Logistics",
         screening: [
-          "How many KYC files are on your refresh queue this month?",
-          "What makes a file take more than a day?",
-          "Which parts do you still do by hand?",
+          "Walk me through the last load that cancelled.",
+          "Who did you call first?",
+          "What did you still track on a board or a sheet?",
         ],
-        qualify: "Has personally worked a KYC refresh in the last year.",
-        profilesTo: "Jamie L. and Sam P.",
-        calendarTo: "Jamie L.",
-        updates: "digest",
-      },
-      iso(now - 1 * day)
+        qualify: "Has covered a cancelled load in the last year.",
+      }),
+      iso(now - 4 * day)
     );
 
-    const follow = story(
-      "req_followup",
-      {
-        title: "Follow-up: off-cycle payroll",
-        decision: "Whether off-cycle runs are a separate workflow or the same reconciliation with a shorter clock.",
-        role: "Payroll associate",
-        fn: "Finance",
-        industry: "Financial services",
-        companyType: "Current practitioner at a company in the industry",
-        companySize: "51–200",
-        years: "0–4 years",
-        geography: "United States or Canada",
-        targetCompanies: "Regional credit unions",
-        avoidCompanies: ["MegaBank National"],
-        formerWithin: "",
-        calls: 1,
-        timeline: "1 week",
-        screening: ["When did you last run payroll outside the normal cycle, and what broke?"],
-        qualify: "Has run or reconciled an off-cycle payroll.",
-        profilesTo: "Jamie L.",
-        calendarTo: "Jamie L.",
-        updates: "rolling",
-      },
-      iso(now - 6 * 3600000)
+    const quotes = story(
+      "req_quotes",
+      Object.assign({}, shared, {
+        title: "What do shippers hate about getting freight quotes?",
+        decision: "What do shippers hate about getting freight quotes?",
+        role: "Shipping manager",
+        fn: "Operations",
+        industry: "Logistics",
+        screening: [
+          "Walk me through the last quote you asked for.",
+          "What made a quote hard to trust?",
+          "What did you still compare by hand?",
+        ],
+        qualify: "Asks brokers for freight rates.",
+      }),
+      iso(now - 1 * day)
     );
 
     function outreach(req, personId) {
@@ -293,34 +280,13 @@
       o.sentAt = sentAt;
     }
 
-    const tPayroll = iso(now - 10 * day);
-    markSent(payroll, "ex_priya", "replied", tPayroll);
-    markSent(payroll, "ex_marcus", "replied", tPayroll);
-    markSent(payroll, "ex_lena", "sent", iso(now - 2 * day));
-    markSent(payroll, "ex_dev", "replied", iso(now - 3 * day));
-    payroll.activity.unshift({ at: tPayroll, agent: "outreach", text: "Example history: four sends were already approved. Nothing left the browser." });
-
-    follow.outreach.forEach((o) => {
-      if (o.personId === "ex_priya") {
-        o.status = "sent";
-        o.sentAt = iso(now - 3 * 3600000);
-      } else {
-        o.status = "skipped";
-        o.skipReason = "Example follow-up only re-invites the practitioner from the last call.";
-        o.step2Status = "cancelled";
-      }
-    });
-    follow.activity.unshift({
-      at: iso(now - 3 * 3600000),
-      agent: "outreach",
-      text: "Example: step 1 to Priya N. is waiting in the practitioner inbox. Approve is already done for this one.",
-    });
+    const tFreight = iso(now - 10 * day);
+    markSent(freight, "ex_maya", "replied", tFreight);
+    markSent(cancel, "ex_noah", "sent", iso(now - 2 * day));
 
     const invitations = [
-      { id: "inv_payroll_priya", example: true, requestId: "req_payroll", personId: "ex_priya", status: "accepted", sentAt: tPayroll, respondedAt: tPayroll, complianceAt: tPayroll },
-      { id: "inv_payroll_marcus", example: true, requestId: "req_payroll", personId: "ex_marcus", status: "accepted", sentAt: tPayroll, respondedAt: tPayroll, complianceAt: tPayroll },
-      { id: "inv_payroll_dev", example: true, requestId: "req_payroll", personId: "ex_dev", status: "accepted", sentAt: iso(now - 3 * day), respondedAt: iso(now - 3 * day), complianceAt: iso(now - 3 * day) },
-      { id: "inv_follow_priya", example: true, requestId: "req_followup", personId: "ex_priya", status: "pending", sentAt: iso(now - 3 * 3600000), respondedAt: null, complianceAt: null },
+      { id: "inv_freight_maya", example: true, requestId: "req_freight", personId: "ex_maya", status: "accepted", sentAt: tFreight, respondedAt: tFreight, complianceAt: tFreight },
+      { id: "inv_cancel_maya", example: true, requestId: "req_cancel", personId: "ex_maya", status: "pending", sentAt: iso(now - 2 * day), respondedAt: null, complianceAt: null },
     ];
 
     function booking(partial) {
@@ -340,86 +306,36 @@
 
     const bookings = [
       booking({
-        id: "book_payroll_priya",
-        requestId: "req_payroll",
-        requestTitle: payroll.title,
-        personId: "ex_priya",
-        inviteId: "inv_payroll_priya",
+        id: "book_freight_maya",
+        requestId: "req_freight",
+        requestTitle: freight.title,
+        personId: "ex_maya",
+        inviteId: "inv_freight_maya",
         slot: iso(now - 5 * day),
         status: "completed",
-        minutes: 28,
+        minutes: 30,
         rating: 5,
-        notes: "Three systems round withholding differently. The analyst re-keys the gap into a spreadsheet. Nobody owns a tool for that difference.",
-        summary: TL.agents.draftSummary(
-          "Three systems round withholding differently. The analyst re-keys the gap into a spreadsheet.",
-          payroll
-        ),
+        notes: "New carriers come from a text thread and a spreadsheet. The slow part is checking who actually has a truck that week.",
+        summary: "New carriers come from a text thread and a spreadsheet. The slow part is checking who actually has a truck that week.",
         createdAt: iso(now - 6 * day),
         completedAt: iso(now - 5 * day),
-      }),
-      booking({
-        id: "book_payroll_marcus",
-        requestId: "req_payroll",
-        requestTitle: payroll.title,
-        personId: "ex_marcus",
-        inviteId: "inv_payroll_marcus",
-        slot: iso(now - 4 * day),
-        status: "completed",
-        minutes: 30,
-        rating: 4,
-        notes: "Same rounding gap, plus a funding file that arrives after the ledger is closed. He keeps a side list of pennies until the next cycle.",
-        summary: "Confirmed the rounding gap shows up at a second credit union. One call is not a pattern yet.",
-        createdAt: iso(now - 6 * day),
-        completedAt: iso(now - 4 * day),
-      }),
-      booking({
-        id: "book_noshow_priya",
-        requestId: "req_hist_noshow",
-        requestTitle: "Off-cycle payroll (example no-show)",
-        personId: "ex_priya",
-        inviteId: "inv_hist_noshow",
-        slot: iso(now - 40 * day),
-        status: "no-show",
-        minutes: 0,
-        notes: "Buyer did not join. Example, so the payout table can show a zero.",
-        summary: "No call. No payout.",
-        createdAt: iso(now - 41 * day),
-        completedAt: iso(now - 40 * day),
-      }),
-      booking({
-        id: "book_compliance_priya",
-        requestId: "req_hist_compliance",
-        requestTitle: "Chargeback evidence (ended for compliance)",
-        personId: "ex_priya",
-        inviteId: "inv_hist_compliance",
-        slot: iso(now - 30 * day),
-        status: "compliance-ended",
-        minutes: 11,
-        rating: 5,
-        notes: "The buyer asked which member accounts were in last month's exceptions. Priya ended the call.",
-        summary: "Call ended at 11 minutes because the question asked for employer-confidential detail. Paid in full under the compliance rule.",
-        createdAt: iso(now - 32 * day),
-        completedAt: iso(now - 30 * day),
       }),
     ];
 
     const state = {
-      version: 1,
+      version: 2,
       session: { role: "buyer", forceOnboarding: false },
       buyer: buyer,
-      expertId: "ex_priya",
+      expertId: "ex_maya",
       pool: people,
-      requests: [kyc, follow, payroll],
+      requests: [quotes, cancel, freight],
       invitations: invitations,
       bookings: bookings,
       credits: {
         balance: 6,
         ledger: [
           { at: iso(now - 20 * day), label: "Example starting balance", delta: 10 },
-          { at: iso(now - 6 * day), label: "Booked · Small-business payroll reconciliation", delta: -1 },
-          { at: iso(now - 6 * day), label: "Booked · Small-business payroll reconciliation", delta: -1 },
-          { at: iso(now - 41 * day), label: "Booked · Off-cycle payroll (no-show)", delta: -1 },
-          { at: iso(now - 32 * day), label: "Booked · Chargeback evidence (compliance stop)", delta: -1 },
+          { at: iso(now - 6 * day), label: "Booked · How do freight brokers find new carriers?", delta: -1 },
         ],
       },
     };
@@ -453,7 +369,7 @@
     if (!raw) return persist(seed());
     try {
       const state = JSON.parse(raw);
-      if (!state || state.version !== 1 || !state.buyer || !state.pool) return persist(seed());
+      if (!state || state.version !== 2 || !state.buyer || !state.pool) return persist(seed());
       cached = state;
       return expire(state);
     } catch (e) {
