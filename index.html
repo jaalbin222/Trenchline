@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Trenchline — talk to the people who do the work</title>
-<meta name="description" content="Customer discovery for pre-seed and seed founders. Ask a question, talk to people who do the work, and leave with notes. $50 for 30 minutes.">
+<meta name="description" content="Customer discovery for pre-seed and seed founders. Type a question, then talk to people who do the work. $50 for 30 minutes.">
 <meta name="theme-color" content="#f6f3ec">
 <meta property="og:title" content="Trenchline — what do you want to understand?">
 <meta property="og:description" content="Talk to the people who actually do the work. Fast and affordable.">
@@ -14,6 +14,7 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="veil" id="veil" aria-hidden="true"></div>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="bg-lines" aria-hidden="true"></div>
 
@@ -49,11 +50,38 @@
     <span class="kick"><i></i>For pre-seed and seed founders</span>
     <h1><span class="up">What do you want to</span><br><mark class="hl">understand?</mark></h1>
     <p class="sub">Talk to the people who actually do the work. Fast, and affordable.</p>
-    <form class="askbox" id="ask" action="app/request-new.html" method="get">
-      <label class="sr" for="q">Your question</label>
-      <input id="q" name="q" type="text" placeholder="How do small teams reconcile payroll?" autocomplete="off">
-      <button class="btn btn-p" type="submit">Ask</button>
-    </form>
+    <div class="ask-wrap">
+      <form class="askbox" id="ask" action="app/" method="get">
+        <label class="sr" for="q">Your question</label>
+        <input id="q" name="q" type="text" autocomplete="off" autocapitalize="sentences" enterkeyhint="search" spellcheck="false" placeholder="How do small credit unions handle chargebacks?" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggest">
+        <button class="btn btn-p" type="submit">Ask</button>
+        <div class="suggest" id="suggest" role="listbox" hidden></div>
+      </form>
+    </div>
+    <div class="chips" aria-label="Topics">
+      <button type="button" data-fill="How do small credit unions handle chargebacks?">Fintech</button>
+      <button type="button" data-fill="How do dental clinics pick scheduling software?">Healthcare</button>
+      <button type="button" data-fill="How do freight brokers find new carriers?">Logistics</button>
+      <button type="button" data-fill="How do shop managers handle returns?">Retail</button>
+      <button type="button" data-fill="How do small software teams onboard a new customer?">SaaS</button>
+      <button type="button" data-fill="How do site crews track the day's work?">Construction</button>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="questions">
+  <div class="wrap">
+    <h2 class="h2 center">Ask people who do the work</h2>
+    <div class="qgrid">
+      <button type="button" data-fill="How do pharmacy techs deal with insurance rejects?">How do pharmacy techs deal with insurance rejects?</button>
+      <button type="button" data-fill="How do payroll teams fix a number that does not match?">How do payroll teams fix a number that does not match?</button>
+      <button type="button" data-fill="How do warehouse leads pick a new scanner?">How do warehouse leads pick a new scanner?</button>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="calls">
+  <div class="wrap">
     <div class="rowcards" aria-label="Example calls">
       <a class="pc" href="app/">
         <div class="top"><div class="av" style="background:#e3efe8;color:#0f5f46">PA</div><div><h4>Payroll associate</h4><p>2 yrs · credit union</p></div></div>
@@ -78,7 +106,7 @@
   </div>
 </section>
 
-<section class="sec" id="how">
+<section class="band" id="how">
   <div class="wrap">
     <div class="steps">
       <article>
@@ -100,10 +128,23 @@
   </div>
 </section>
 
-<section class="sec price-line" id="pricing">
+<section class="band price-line" id="pricing">
   <div class="wrap">
     <p><span data-bind="price">$50</span> per 30-minute call.</p>
-    <a class="btn btn-p" href="app/">Open the app <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <h2>Stop guessing. <em>Ask the people doing the job.</em></h2>
+    <div class="ask-wrap">
+      <form class="askbox" id="ask2" action="app/" method="get">
+        <label class="sr" for="q2">Your question</label>
+        <input id="q2" name="q" type="text" autocomplete="off" autocapitalize="sentences" enterkeyhint="search" spellcheck="false" placeholder="How do dental clinics pick scheduling software?" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggest2">
+        <button class="btn btn-p" type="submit">Ask</button>
+        <div class="suggest" id="suggest2" role="listbox" hidden></div>
+      </form>
+    </div>
     <p class="take"><a href="app/inbox.html">Want to take calls? Get paid</a></p>
   </div>
 </section>
@@ -111,7 +152,7 @@
 
 <footer>
   <div class="wrap">
-    <div class="fb" style="margin-top:0;border:0;padding-top:0"><span>© 2026 Trenchline.</span><a href="app/">Open the app</a></div>
+    <div class="fb" style="margin-top:0;border:0;padding-top:0"><span>© Trenchline</span><a href="app/">Open the app</a></div>
   </div>
 </footer>
 <script src="app/assets/config.js" defer></script>

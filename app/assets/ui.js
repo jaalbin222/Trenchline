@@ -338,9 +338,52 @@
     }
   });
 
+  function peopleList(req) {
+    const people = peopleFor(req).map(({ p }) => {
+      const { booking } = inviteState(req, p.id);
+      let action = `<button class="btn" type="button" data-act="book-person" data-request="${esc(req.id)}" data-person="${esc(p.id)}">Book call</button>`;
+      if (booking && booking.status === "confirmed") action = `<a class="btn secondary" href="call.html?booking=${esc(booking.id)}">Scheduled</a>`;
+      else if (booking) action = `<span class="ex">Already spoke</span>`;
+      return `<article class="card"><div class="person"><div class="init">${esc(initials(p.name))}</div><div><h2>${esc(p.name)} ${p.example ? '<span class="ex">Example</span>' : ""}</h2><p class="role">${esc(why(p))}</p></div><div class="actions">${action}</div></div></article>`;
+    }).join("");
+    return `<a class="back" href="index.html">Projects</a>
+      <h1>${esc(req.title)}</h1>
+      <section class="section"><h2>People to talk to</h2>${people || "<p class='sub'>No one yet.</p>"}</section>`;
+  }
+
+  function startFromQuestion(root, q) {
+    root.innerHTML = shell("home", `<h1>${esc(q)}</h1><p class="sub" id="finding">Finding people who do this work...</p>`);
+    setTimeout(() => {
+      const key = "tl.q." + q;
+      let id = sessionStorage.getItem(key);
+      let req = id && TL.store.request(id);
+      if (!req) {
+        const res = TL.store.createRequest(Object.assign({}, TL.agents.SAMPLE_BRIEF, { title: q, decision: q }));
+        if (!res.ok) {
+          root.innerHTML = shell("home", `<h1>${esc(q)}</h1><p class="sub">${esc(res.error)}</p><p style="margin-top:16px"><a class="btn" href="index.html">Projects</a></p>`);
+          return;
+        }
+        id = res.id;
+        sessionStorage.setItem(key, id);
+        req = TL.store.request(id);
+      }
+      views.home = function () {
+        const current = TL.store.request(id);
+        return current ? peopleList(current) : projects();
+      };
+      setTimeout(paint, 1000);
+    }, 40);
+  }
+
   function boot() {
     if (document.body.dataset.booted) return;
     document.body.dataset.booted = "1";
+    const root = document.getElementById("app");
+    const q = (qs("q") || "").trim();
+    if (root && (root.dataset.page || "home") === "home" && q) {
+      startFromQuestion(root, q);
+      return;
+    }
     paint();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
