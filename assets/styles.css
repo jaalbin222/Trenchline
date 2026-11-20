@@ -437,3 +437,32 @@ footer{border-top:1px solid var(--line2);padding:56px 0 40px}
 
 /* one-switch removal of all illustrative social proof (see SHOW_PLACEHOLDERS in app.js) */
 .no-placeholders [data-placeholder]{display:none!important}
+
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+form.askbox{display:flex;flex-direction:row;gap:8px;align-items:center;max-width:640px;margin:28px auto 0;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 20px;box-shadow:0 16px 40px -28px rgba(21,21,19,.45)}
+.askbox input{flex:1;min-width:0;border:0;background:transparent;font-size:16px;padding:10px 0;outline:none}
+.askbox input::placeholder{color:var(--mu2)}
+.rowcards{display:flex;gap:14px;justify-content:center;align-items:stretch;flex-wrap:wrap;margin-top:40px}
+.rowcards .pc{position:relative;left:auto;top:auto;width:230px;opacity:1;transform:none;text-decoration:none;color:inherit}
+.loaded .rowcards .pc,.loaded .rowcards .pc:hover{transform:none;box-shadow:0 24px 50px -28px rgba(21,21,19,.35)}
+.rowcards .note-card{padding:0;border:0;background:none;box-shadow:none;width:230px}
+.rowcards .ledger{height:100%;display:flex;flex-direction:column;justify-content:center}
+.rowcards .ledger .read{font-size:22px;font-weight:620;letter-spacing:-.03em;color:var(--hl);margin:8px 0}
+.rowcards .ledger p:last-child{color:#d9d5ca;font-size:14px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.steps article{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 22px;text-align:left}
+.steps h2{font-size:26px;letter-spacing:-.035em;font-weight:620;line-height:1.15;margin-top:12px}
+.steps p{color:var(--mu);margin-top:10px}
+.price-line{padding-top:20px;text-align:center}
+.price-line p:first-child{font-size:40px;font-weight:620;letter-spacing:-.04em}
+.price-line .btn{margin-top:22px}
+.take{margin-top:16px;font-size:15px;font-weight:500}
+.take a{color:var(--ink);border-bottom:1px solid var(--line2)}
+@media (max-width:860px){
+  form.askbox{flex-direction:column;align-items:stretch;border-radius:22px;padding:12px}
+  .askbox .btn{width:100%}
+  .rowcards{flex-direction:column;align-items:center}
+  .rowcards .pc,.rowcards .note-card{width:100%;max-width:380px}
+  .steps{grid-template-columns:1fr}
+  .price-line p:first-child{font-size:32px}
+}

@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Trenchline: customer discovery from the people in the trenches</title>
+<meta name="description" content="Book $50 customer-discovery calls with people who do the job today or did it last year. Hand-matched, paid upfront, Mom Test script included.">
+<meta name="theme-color" content="#f6f3ec">
+<meta property="og:title" content="Trenchline: talk to the people who actually do the work">
+<meta property="og:description" content="$50 customer-discovery calls with people doing the job today, not $1,000+ expert-network calls.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="bg-lines" aria-hidden="true"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 20 20" fill="none"><path d="M5 10.5l3.2 3L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-star" viewBox="0 0 20 20"><path fill="currentColor" d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 16 16" fill="none"><path d="M6 3h7v7M13 3L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1.2-3.5 4-5 7-5s5.8 1.5 7 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none"><rect x="5" y="10.5" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V8a4 4 0 018 0v2.5" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none"><path d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v7a2.5 2.5 0 01-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 014 14.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cash" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-cv" viewBox="0 0 24 24" fill="none"><path d="M7 3h7l4 4v14H7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 12h5M10 16h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Trenchline home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#151513"/><path d="M5.5 12.5h5.5v8h10v-8h5.5" stroke="#f6f3ec" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="16" cy="16.5" r="2" fill="#ffe36e"/></svg>
+      trenchline
+    </a>
+    <nav class="links" aria-label="Primary">
+      <a href="#problem">Why</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#juniors">Take calls</a><a href="#trust">Trust</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-r">
+      <a class="btn btn-p btn-sm" href="../app/">Open the app</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#problem">Why</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#juniors">Take calls</a><a href="#trust">Trust</a><a href="#faq">FAQ</a>
+    <a class="btn btn-p" href="../app/">Open the app</a>
+  </div>
+</header>
+
+<main id="main">
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <span class="kick"><i></i>Founding cohort · 5 founder spots</span>
+    <h1><span class="up">Customer discovery,</span><br>from the people <mark class="hl">in the trenches.</mark></h1>
+    <p class="sub">Book <b>$50 calls</b> with people who do the job today or did it last year: ex&#8209;interns, analysts, coordinators and techs. You learn how the work really gets done, from people who are paid to show up.</p>
+    <div class="ctas">
+      <a class="btn btn-p" href="../app/" data-path="founder">Book your first calls <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
+      <a class="btn btn-g" href="../app/inbox.html" data-path="junior">I want to take calls</a>
+    </div>
+    <div class="hero-fine">
+      <span><svg><use href="#i-check"/></svg>Hand-matched in days, not weeks</span>
+      <span><svg><use href="#i-check"/></svg>Mom Test question script included</span>
+      <span><svg><use href="#i-check"/></svg>Nothing confidential, ever</span>
+    </div>
+    <div class="fan" aria-label="Example call-taker profiles (illustrative)">
+      <div class="pc p1"><div class="top"><div class="av" style="background:#e3efe8;color:#0f5f46">JS</div><div><h4>Junior site engineer</h4><p>1 yr · commercial construction</p></div></div><div class="topics"><span>RFIs</span><span>Site reports</span><span>Procore</span></div><div class="meta"><span>30 min</span><b>$50</b></div></div>
+      <div class="pc p2"><div class="top"><div class="av" style="background:#ffe9b8;color:#7a5200">AK</div><div><h4>Ex-intern, revenue ops</h4><p>Summer 2026 · B2B SaaS</p></div></div><div class="topics"><span>CRM hygiene</span><span>Lead routing</span></div><div class="meta"><span>30 min</span><b>$50</b></div></div>
+      <div class="pc p3"><div class="top"><div class="av" style="background:#e6e3f7;color:#3a2f8a">PT</div><div><h4>Pharmacy technician</h4><p>3 yrs · retail pharmacy</p></div></div><div class="topics"><span>Refills</span><span>Insurance rejects</span></div><div class="meta"><span>30 min</span><b>$50</b></div></div>
+      <div class="pc p4"><div class="ledger"><h5>What a 30-min call costs</h5><div class="row"><span>Expert network</span><span><s>$1,000+</s></span></div><div class="row"><span>Paid B2B interview</span><span><s>$200–500</s></span></div><div class="row"><span>Mentor marketplace</span><span><s>~$150</s></span></div><div class="row us"><span>Trenchline</span><span>$50</span></div></div></div>
+    </div>
+    <p class="fan-note">Profiles are illustrative · price sources under pricing</p>
+  </div>
+</section>
+
+<!-- PLACEHOLDER: "Founders from" strip. All company names and wordmarks below are invented; none are real customers. -->
+<section class="strip" data-placeholder aria-label="Founders from (illustrative)">
+  <div class="wrap">
+    <div class="strip-h rv">Founders from teams like <span class="ph-tag">Illustrative</span></div>
+  </div>
+  <div class="marquee rv d1"><div class="marquee-in" id="logos"></div></div>
+</section>
+
+<!-- PROBLEM -->
+<section class="sec" id="problem">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow rv">The problem</span>
+      <h2 class="h2 rv d1">Customer discovery is <em>broken</em> for first-time founders.</h2>
+      <p class="lead rv d2">Cold outreach gets ignored, friends tell you what you want to hear, and expert networks are priced for hedge funds. These are real posts from founders on Reddit.</p>
+    </div>
+    <div class="quotes">
+      <figure class="q wide dark rv">
+        <blockquote>I'm doing ~30 LinkedIn DMs a week… Most get ignored… I cannot get people to talk to me.</blockquote>
+        <figcaption class="src"><span class="sub-r"><i>r/</i>r/startups</span><a href="https://www.reddit.com/r/startups/comments/1tkvhsv/i_will_not_promote_im_having_a_horrible_time/" target="_blank" rel="noopener">View thread <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv d1">
+        <blockquote>I've sent 100+ emails over the past 3 days with zero responses.</blockquote>
+        <figcaption class="src"><span class="sub-r"><i>r/</i>r/startups</span><a href="https://www.reddit.com/r/startups/comments/1obq1oq/how_did_you_do_customer_discovery_with_no_network/" target="_blank" rel="noopener">View thread <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv">
+        <blockquote>People I knew personally: "Yes, this is definitely a problem we face." People I didn't know: "No, not really something we deal with."</blockquote>
+        <figcaption class="src"><span class="sub-r"><i>r/</i>r/SaaS</span><a href="https://www.reddit.com/r/SaaS/comments/1qoho1l/customer_discovery_is_probably_useless_for/" target="_blank" rel="noopener">View thread <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv d1">
+        <blockquote>Even with compensation mentioned, you'll get a 5-10% response rate.</blockquote>
+        <figcaption class="src"><span class="sub-r"><i>r/</i>r/startups</span><a href="https://www.reddit.com/r/startups/comments/1gj0eqk/paying_for_customer_interview_respondents/" target="_blank" rel="noopener">View thread <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv d2">
+        <blockquote>We used GLG forever, but the pricing is getting insane.</blockquote>
+        <figcaption class="src"><span class="sub-r"><i>r/</i>r/expertnetworks</span><a href="https://www.reddit.com/r/expertnetworks/comments/1q8mpxz/glg_vs_alphasights_vs_dialectica_whos_winning_in/" target="_blank" rel="noopener">View thread <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q wide rv">
+        <blockquote>For months I was doing customer interviews and getting nothing actionable. Everyone said they loved the idea. Nobody bought.</blockquote>
+        <figcaption class="src"><span class="sub-r"><i>r/</i>r/indiehackers</span><a href="https://www.reddit.com/r/indiehackers/comments/1u6mwta/i_kept_getting_useless_customer_feedback_until_i/" target="_blank" rel="noopener">View thread <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+      <figure class="q rv d1">
+        <blockquote>it still asks for the expensive thing first: a 20 minute call with a stranger.</blockquote>
+        <figcaption class="src"><span class="sub-r"><i>r/</i>r/startups</span><a href="https://www.reddit.com/r/startups/comments/1tkvhsv/i_will_not_promote_im_having_a_horrible_time/" target="_blank" rel="noopener">View thread <svg width="12" height="12"><use href="#i-ext"/></svg></a></figcaption>
+      </figure>
+    </div>
+    <div class="insight">
+      <div class="ins rv"><span class="n">01</span><div><b>Access is the bottleneck.</b>The hard part isn't the questions. It's getting a real practitioner on a call at all.</div></div>
+      <div class="ins rv d1"><span class="n">02</span><div><b>Friends give false positives.</b>Neutral, paid strangers who do the job give you facts instead of compliments.</div></div>
+      <div class="ins rv d2"><span class="n">03</span><div><b>Seniority is overpriced.</b>Juniors are closest to the workflow, and they'll take a 30-minute call.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="sec how" id="how">
+  <div class="wrap">
+    <div class="how-grid">
+      <div class="how-l">
+        <span class="eyebrow rv">How it works</span>
+        <h2 class="h2 rv d1">Three steps from idea to <em>real answers.</em></h2>
+        <p class="lead rv d2">During the founding cohort, a human, not an algorithm, matches every call by hand.</p>
+        <div class="rail" id="rail">
+          <span class="fill" id="railFill"></span>
+          <a href="#s1" class="on"><span class="d">01</span>Tell us who does the work</a>
+          <a href="#s2"><span class="d">02</span>We match &amp; book the call</a>
+          <a href="#s3"><span class="d">03</span>Ask better questions</a>
+        </div>
+      </div>
+      <div class="how-r">
+        <article class="step on seen" id="s1" data-i="0">
+          <span class="num">STEP 01</span>
+          <h3>Tell us your idea and who does the work today.</h3>
+          <p>Describe the workflow you want to understand and the role that lives in it, like "the person who chases unpaid invoices at a 50-person manufacturer." It takes two minutes.</p>
+          <div class="vis">
+            <div class="fld"><small>Your idea</small><span class="typing" id="typeIdea"></span></div>
+            <div class="fld"><small>Who does this work?</small>Accounts payable analyst, mid-market manufacturing</div>
+            <div class="fld"><small>What do you want to learn?</small>How invoice exceptions get resolved today</div>
+          </div>
+        </article>
+        <article class="step" id="s2" data-i="1">
+          <span class="num">STEP 02</span>
+          <h3>We hand-match people who do the job, and book it.</h3>
+          <p>We find 2–3 call-takers who do the role today or did it in the last few years, preferring former employees or people in the same role elsewhere. You pay $50 per call upfront and we handle scheduling.</p>
+          <div class="vis">
+            <div class="match">
+              <div class="mrow sel"><div class="av" style="background:#e3efe8;color:#0f5f46">MR</div><div class="info"><b>AP analyst · 2 yrs</b><span>Former employee, manufacturing</span></div><span class="fit">Strong fit</span></div>
+              <div class="mrow"><div class="av" style="background:#ffe9b8;color:#7a5200">DL</div><div class="info"><b>Ex-intern, finance ops</b><span>Summer 2026, distributor</span></div><span class="fit">Good fit</span></div>
+              <div class="mrow"><div class="av" style="background:#e6e3f7;color:#3a2f8a">SK</div><div class="info"><b>Junior accountant · 1 yr</b><span>Same role, different company</span></div><span class="fit">Good fit</span></div>
+            </div>
+            <div class="pay"><span>2 calls · paid upfront via Stripe</span><b>$100.00</b></div>
+          </div>
+        </article>
+        <article class="step" id="s3" data-i="2">
+          <span class="num">STEP 03</span>
+          <h3>Show up with questions that pass the Mom Test.</h3>
+          <p>Every booking comes with a short script built around past behaviour, not hypotheticals, so you leave with facts about how the work is really done, not compliments.</p>
+          <div class="vis">
+            <div class="script">
+              <div class="sline"><span class="ok">✓</span><span>"Walk me through the last invoice that got stuck."</span></div>
+              <div class="sline"><span class="ok">✓</span><span>"What did you do to unstick it, and how long did it take?"</span></div>
+              <div class="sline bad"><span class="no">✕</span><span>"Would you use a tool that automates this?"</span></div>
+            </div>
+            <div class="notes"><span>6 days stuck</span><span>re-keyed by hand</span><span>chased on Teams</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" id="pricing">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="eyebrow rv">Pricing</span>
+      <h2 class="h2 rv d1">Ten calls for the price of <em>half&nbsp;an&nbsp;hour</em> with an exec.</h2>
+      <p class="lead rv d2">Drag the slider to see what your discovery sprint would cost with each option.</p>
+    </div>
+    <div class="price-grid">
+      <div class="calc rv">
+        <div class="calc-top">
+          <div><label for="calls">Discovery calls you need</label><div class="val"><span id="callsOut">10</span><small>calls · 30 min each</small></div></div>
+        </div>
+        <input type="range" id="calls" min="1" max="30" value="10" aria-describedby="callsOut">
+        <div class="ticks"><span>1</span><span>10</span><span>20</span><span>30</span></div>
+        <div class="bars" id="bars">
+          <div class="bar" data-rate="1000"><div class="lbl"><b>Expert network</b><span>10+ yr execs<sup>1</sup></span></div><div class="trk"><span class="fil"></span></div><div class="amt">$0</div></div>
+          <div class="bar" data-rate="350"><div class="lbl"><b>Paid B2B interview</b><span>DIY recruiting<sup>2</sup></span></div><div class="trk"><span class="fil"></span></div><div class="amt">$0</div></div>
+          <div class="bar" data-rate="150"><div class="lbl"><b>Mentor marketplace</b><span>Advice calls<sup>3</sup></span></div><div class="trk"><span class="fil"></span></div><div class="amt">$0</div></div>
+          <div class="bar us" data-rate="50"><div class="lbl"><b>Trenchline</b><span>People doing the job</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$0</div></div>
+        </div>
+        <div class="save"><svg width="20" height="20" style="color:#6b5600"><use href="#i-info"/></svg><span>You'd save <b id="saveOut">$9,500</b> versus an expert network.</span></div>
+        <p class="foot-src">Per-call estimates for comparison. <sup>1</sup> $1,000+/hr: Guidepoint base rate reported on <a href="https://www.reddit.com/r/expertnetworks/comments/1q8mpxz/glg_vs_alphasights_vs_dialectica_whos_winning_in/" target="_blank" rel="noopener">r/expertnetworks</a>; GLG estimates of $1,000–2,500/hr from <a href="https://nexusexpertresearch.co/blog/glg-pricing/" target="_blank" rel="noopener">Nexus Expert Research</a>. <sup>2</sup> $200–500 per B2B interview (midpoint shown), <a href="https://www.reddit.com/r/startups/comments/1gj0eqk/paying_for_customer_interview_respondents/" target="_blank" rel="noopener">r/startups</a>. <sup>3</sup> From ~$150 per 30 min on mentor/expert marketplaces.</p>
+      </div>
+      <aside class="plan rv d1">
+        <span class="tag">Founding cohort</span>
+        <h3>Pay per call</h3>
+        <div class="big">$50<small> / 30-min call</small></div>
+        <ul>
+          <li><svg><use href="#i-check"/></svg>Hand-matched call-takers who do the role</li>
+          <li><svg><use href="#i-check"/></svg>Scheduling and reminders handled for you</li>
+          <li><svg><use href="#i-check"/></svg>Mom Test question script for your idea</li>
+          <li><svg><use href="#i-check"/></svg>No-show? We rebook or refund</li>
+          <li><svg><use href="#i-check"/></svg>No subscription, no seat fees</li>
+        </ul>
+        <div class="spots"><div class="spots-h"><span>Cohort 01</span><span>5 founder spots</span></div><div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+        <a class="btn btn-hl" href="../app/" data-path="founder">Claim a founder spot <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
+        <p class="fine">2-call minimum · paid upfront via Stripe</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- PLACEHOLDER: Social proof section. Stats, ratings, testimonial quotes, names and companies are all invented for this draft. Replace with real data or remove before sharing publicly. -->
+<section class="sec" id="proof" data-placeholder style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="eyebrow rv">Early signal <span class="ph-tag">Illustrative</span></span>
+      <h2 class="h2 rv d1">Founders get to the <em>truth</em> faster.</h2>
+    </div>
+    <div class="stats rv">
+      <!-- PLACEHOLDER --><div class="stat"><div class="v" data-count="148">0</div><div class="k">Calls booked</div></div>
+      <!-- PLACEHOLDER --><div class="stat"><div class="v" data-count="42">0</div><div class="k">Founders served</div></div>
+      <!-- PLACEHOLDER --><div class="stat"><div class="v"><span data-count="4.8" data-dec="1">0</span><small>/5</small></div><div class="k">Average call rating</div></div>
+      <!-- PLACEHOLDER --><div class="stat"><div class="v"><span data-count="3">0</span><small> days</small></div><div class="k">Typical time to first call</div></div>
+    </div>
+    <div class="tests">
+      <!-- PLACEHOLDER --><figure class="t rv"><div class="stars" aria-label="5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"Two calls with AP analysts killed my first idea and handed me a better one. I'd spent a month cold-emailing CFOs for less."</p><figcaption class="who"><div class="av" style="background:#e3efe8;color:#0f5f46">PN</div><div><b>Priya N.</b><span>Solo founder, fintech</span></div></figcaption></figure>
+      <!-- PLACEHOLDER --><figure class="t rv d1"><div class="stars" aria-label="5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"The ex-intern knew the warehouse workflow better than the VP I'd paid an expert network for. Thirty minutes and I had my wedge."</p><figcaption class="who"><div class="av" style="background:#ffe9b8;color:#7a5200">MO</div><div><b>Marcus O.</b><span>Co-founder, logistics SaaS</span></div></figcaption></figure>
+      <!-- PLACEHOLDER --><figure class="t rv d2"><div class="stars" aria-label="5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"I took four calls in my first month. Easy money, and it's genuinely fun explaining how my job actually works."</p><figcaption class="who"><div class="av" style="background:#e6e3f7;color:#3a2f8a">JT</div><div><b>Jess T.</b><span>Call-taker, junior site engineer</span></div></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- JUNIORS -->
+<section class="jr" id="juniors">
+  <div class="wrap">
+    <div class="jr-grid">
+      <div>
+        <span class="eyebrow rv">For call-takers</span>
+        <h2 class="h2 rv d1">Get paid to talk about <em>your job.</em></h2>
+        <p class="lead rv d2">If you're a new grad, an ex-intern or 0–4 years into a role, founders want to hear how your work actually gets done. Earn $35 per 30-minute call, on your schedule.</p>
+        <ul class="perks">
+          <li class="rv"><span class="ic"><svg><use href="#i-cash"/></svg></span><b>Cash, not gift cards</b>$35 per call, paid by e-transfer or PayPal after the call.</li>
+          <li class="rv d1"><span class="ic"><svg><use href="#i-cal"/></svg></span><b>No screener lottery</b>We match you to founders directly. Accept or decline each request.</li>
+          <li class="rv d2"><span class="ic"><svg><use href="#i-lock"/></svg></span><b>Nothing confidential</b>Talk about how the work is done, never your employer's secrets.</li>
+          <li class="rv d3"><span class="ic"><svg><use href="#i-cv"/></svg></span><b>Résumé-worthy</b>Advise early-stage founders and see startups up close.</li>
+        </ul>
+      </div>
+      <div class="earn rv d2">
+        <h4>Earnings estimator</h4>
+        <div class="row"><div class="amt">$<span id="earnOut">140</span><small> / month</small></div></div>
+        <label for="perMonth" style="display:block;margin-top:18px"><span id="pmOut">4</span> calls per month × $35</label>
+        <input type="range" id="perMonth" min="1" max="12" value="4">
+        <div class="ticks"><span>1</span><span>4</span><span>8</span><span>12</span></div>
+        <div class="req">
+          <div class="top"><span>New request · example</span><b>$35</b></div>
+          <h5>"How do site engineers handle RFIs on mid-size builds?"</h5>
+          <p>Founder exploring construction software · 30 min · this week</p>
+          <div class="acts"><span class="y">Accept</span><span>Decline</span></div>
+        </div>
+        <a class="btn btn-hl" href="../app/inbox.html" data-path="junior" style="width:100%;margin-top:18px">Apply to take calls <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="sec" id="trust">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow rv">Trust &amp; compliance</span>
+      <h2 class="h2 rv d1">Talk about the <em>work</em>, never the employer.</h2>
+      <p class="lead rv d2">Expert networks run on strict rules for a reason. We keep calls useful for founders and safe for call-takers.</p>
+    </div>
+    <div class="trust">
+      <div class="tr rv"><span class="ic"><svg><use href="#i-chat"/></svg></span><h4>How, not who</h4><p>Calls cover how a role's work gets done: tools, steps, pain points. Never customer names, pricing or internal plans.</p></div>
+      <div class="tr rv d1"><span class="ic"><svg><use href="#i-user"/></svg></span><h4>Former employees first</h4><p>We prefer people who've left the company, or who do the same role at a different one.</p></div>
+      <div class="tr rv d2"><span class="ic"><svg><use href="#i-shield"/></svg></span><h4>Signed ground rules</h4><p>Call-takers confirm that they share no confidential information. Founders agree not to ask for any.</p></div>
+      <div class="tr rv d3"><span class="ic"><svg><use href="#i-lock"/></svg></span><h4>Private by default</h4><p>No recording without both parties' consent. Call-takers can use first names only.</p></div>
+    </div>
+    <div class="limits rv">
+      <span class="ic"><svg><use href="#i-info"/></svg></span>
+      <p><b>Honest about the limits.</b> Junior call-takers know how the work really gets done. They usually don't control budgets, so for "who pays and how much" questions, pair your Trenchline calls with at least one buyer conversation. We'll tell you when you need one.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="soon rv">
+      <div>
+        <span class="eyebrow">Coming soon</span>
+        <h2 class="h2">A discovery tracker that <em>remembers</em> every call.</h2>
+        <p class="lead">Notes, quotes and patterns from every conversation, in one place: tag pains, spot what repeats, and know when you've heard enough.</p>
+      </div>
+      <div class="board" aria-hidden="true">
+        <div class="col"><h6>To book <span>3</span></h6><div class="kc"><b>AP analyst</b><span>Manufacturing</span></div><div class="kc"><b>Controller</b><span>Buyer call</span><i class="w">Budget</i></div></div>
+        <div class="col"><h6>Done <span>4</span></h6><div class="kc"><b>Ex-intern, finance ops</b><span>"Re-keyed by hand"</span><i>Pain ×3</i></div><div class="kc"><b>Junior accountant</b><span>"Lives in a shared inbox"</span><i>Pain ×2</i></div></div>
+        <div class="col"><h6>Patterns <span>2</span></h6><div class="kc"><b>PO mismatch</b><span>4 of 4 calls</span><i>Strong</i></div><div class="kc"><b>Teams chasing</b><span>3 of 4 calls</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq" style="padding-top:20px">
+  <div class="wrap faq-grid">
+    <div>
+      <span class="eyebrow rv">FAQ</span>
+      <h2 class="h2 rv d1">Questions, <em>answered.</em></h2>
+      <p class="lead rv d2">Something else? Ask us when you join the waitlist.</p>
+    </div>
+    <div class="faq rv d1">
+      <details open><summary>Why talk to juniors instead of senior experts?<span class="pl"></span></summary><div class="ans">Juniors and ex-interns are closest to the day-to-day workflow, the part your product has to change. They answer quickly, they're affordable, and they tell you what really happens, not the version in the slide deck.</div></details>
+      <details><summary>Can a junior tell me who buys and what they'd pay?<span class="pl"></span></summary><div class="ans">Usually not, and we won't pretend otherwise. Use Trenchline to understand the workflow and the pain. For budget and buying-process questions, pair it with at least one conversation with a buyer.</div></details>
+      <details><summary>How fast do I get a call?<span class="pl"></span></summary><div class="ans">During the founding cohort we match by hand, and we aim to have your first call booked within a few days. If we can't find a strong fit, we'll tell you and refund you.</div></details>
+      <details><summary>How does payment work?<span class="pl"></span></summary><div class="ans">Founders pay $50 per call upfront through a secure Stripe link, with a 2-call minimum. Call-takers receive $35 per completed call. If a call-taker doesn't show, we rebook or refund you.</div></details>
+      <details><summary>Is this allowed if I currently work in the role?<span class="pl"></span></summary><div class="ans">You talk about how the work is done in your role in general terms, never confidential information about your employer, its customers or its plans. Check your employment agreement. We prefer former employees or people in the same role at another company.</div></details>
+      <details><summary>How is this different from Respondent or User Interviews?<span class="pl"></span></summary><div class="ans">Those platforms are built for research teams running studies. Trenchline is for founders before product-market fit: we hand-pick people who do the job, book the call and give you a script for asking good questions.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="sec" id="join" style="padding-top:40px">
+  <div class="wrap wl">
+    <div class="wl-side">
+      <span class="eyebrow rv">Cohort 01</span>
+      <h2 class="h2 rv d1">Join the <em>founding cohort.</em></h2>
+      <p class="lead rv d2">We're running a two-week, hand-matched pilot with 5 founders and about 15 call-takers. Tell us which side you're on.</p>
+      <div class="wl-points rv d3">
+        <div><svg><use href="#i-check"/></svg>5 founder spots, first come, first served</div>
+        <div><svg><use href="#i-check"/></svg>We reply personally within 48 hours</div>
+        <div><svg><use href="#i-check"/></svg>No payment until your calls are matched</div>
+      </div>
+    </div>
+    <div class="form-card rv d1" id="formCard">
+      <div class="tabs" role="tablist" data-v="founder" id="tabs">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" role="tab" id="tab-founder" aria-selected="true" aria-controls="pane-founder" data-v="founder">I'm a founder</button>
+        <button type="button" role="tab" id="tab-junior" aria-selected="false" aria-controls="pane-junior" data-v="junior">I'm a call-taker</button>
+      </div>
+      <!-- TODO: set FORM_ENDPOINT in assets/app.js (e.g. https://formspree.io/f/XXXX or a Tally/Basin endpoint) -->
+      <form id="wlForm" novalidate>
+        <input type="hidden" name="path" id="pathField" value="founder">
+        <div class="f2">
+          <div class="field"><label for="name">Name</label><input id="name" name="name" autocomplete="name" required></div>
+          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        </div>
+        <div class="pane" id="pane-founder" role="tabpanel" aria-labelledby="tab-founder">
+          <div class="field"><label for="idea">Your idea, in a sentence</label><textarea id="idea" name="idea" placeholder="e.g. Software that resolves invoice exceptions for mid-market manufacturers"></textarea></div>
+          <div class="field" style="margin-top:16px"><label for="role">Who does this work today? <span>(role)</span></label><input id="role" name="target_role" placeholder="e.g. Accounts payable analyst"></div>
+        </div>
+        <div class="pane" id="pane-junior" role="tabpanel" aria-labelledby="tab-junior" hidden>
+          <div class="f2">
+            <div class="field"><label for="jrole">Current or recent role</label><input id="jrole" name="role" placeholder="e.g. Junior site engineer"></div>
+            <div class="field"><label for="yrs">Years in role</label><select id="yrs" name="years"><option>Internship / co-op</option><option>Less than 1 year</option><option>1–2 years</option><option>2–4 years</option></select></div>
+          </div>
+          <div class="field" style="margin-top:16px"><label for="li">LinkedIn <span>(optional)</span></label><input id="li" name="linkedin" type="url" placeholder="https://linkedin.com/in/…"></div>
+        </div>
+        <label class="consent"><input type="checkbox" required id="consent"> <span>I agree to be contacted about the Trenchline pilot. <span id="consentJr" hidden>I won't share confidential information about any employer.</span></span></label>
+        <button class="btn btn-p" type="submit" id="submitBtn">Request a founder spot <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></button>
+        <p class="form-fine" id="formMsg" role="status" aria-live="polite">We'll never share your email.</p>
+      </form>
+      <div class="ok-state" role="status">
+        <div class="ic"><svg width="26" height="26"><use href="#i-check"/></svg></div>
+        <h3>You're on the list.</h3>
+        <p id="okMsg">We'll reply personally within 48 hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 class="rv">Stop guessing. <mark class="hl">Ask the trenches.</mark></h2>
+    <div class="ctas rv d1"><a class="btn btn-p" href="../app/" data-path="founder">Book your first calls <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a><a class="btn btn-g" href="../app/inbox.html" data-path="junior">Get paid to take calls</a></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <div>
+        <a class="brand" href="#top" aria-label="Trenchline home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#151513"/><path d="M5.5 12.5h5.5v8h10v-8h5.5" stroke="#f6f3ec" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="16" cy="16.5" r="2" fill="#ffe36e"/></svg>trenchline</a>
+        <p>Customer discovery calls with the people who actually do the work. Built in Toronto.</p>
+      </div>
+      <div><h6>Product</h6><ul><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#trust">Trust &amp; compliance</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h6>Join</h6><ul><li><a href="../app/" data-path="founder">For founders</a></li><li><a href="../app/inbox.html" data-path="junior">For call-takers</a></li></ul></div>
+      <div><h6>Research</h6><ul><li><a href="https://www.reddit.com/r/startups/comments/1tkvhsv/i_will_not_promote_im_having_a_horrible_time/" target="_blank" rel="noopener">r/startups thread</a></li><li><a href="https://www.reddit.com/r/SaaS/comments/1qoho1l/customer_discovery_is_probably_useless_for/" target="_blank" rel="noopener">r/SaaS thread</a></li><li><a href="https://www.reddit.com/r/startups/comments/1gj0eqk/paying_for_customer_interview_respondents/" target="_blank" rel="noopener">Paying interviewees</a></li></ul></div>
+    </div>
+    <div class="fb"><span>© 2026 Trenchline. Pilot in progress.</span><span>Reddit quotes are excerpts from public threads and link to the source. Not affiliated with Reddit or any company named.</span></div>
+    <div class="giant" aria-hidden="true">trenchline</div>
+  </div>
+</footer>
+<script src="assets/app.js" defer></script>
+</body>
+</html>
