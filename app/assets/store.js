@@ -45,10 +45,10 @@
       ["ex_marcus", "Marcus T.", "Payroll accountant", 3, "3 yrs", "Finance", "Financial services", "Lakeshore Credit Union", "Regional credit union", "51–200", false, "United States", "linkedin", ["payroll reconciliation", "tax filings", "exceptions"], "Reconciles payroll for a credit union with a few dozen business members.", false],
       ["ex_sofia", "Sofia M.", "KYC analyst", 2, "1.5 yrs", "Compliance", "Financial services", "Field & Pine Bank", "Retail bank", "1,000+", false, "United States", "email", ["KYC refresh", "periodic review", "evidence chase"], "Works the periodic KYC queue at a retail bank.", false],
       ["ex_lena", "Lena K.", "Ops analyst", 1, "1 yr", "Operations", "Payments", "Northline Payments", "Payments company", "51–200", false, "Canada", "email", ["merchant onboarding", "KYB", "exceptions"], "Onboards merchants and clears KYB exceptions.", false],
-      ["ex_maya", "Maya L.", "Freight coordinator", 3, "3 yrs", "Operations", "Logistics", "Harbor Freight Desk", "Freight brokerage", "51–200", false, "United States", "email", ["carriers", "lanes", "capacity"], "Finds trucks for shippers a few times a day.", true],
-      ["ex_sam", "Sam K.", "Carrier sales", 2, "2 yrs", "Sales", "Logistics", "Redlane", "Freight brokerage", "11–50", false, "United States", "email", ["carriers", "new lanes"], "Calls carriers when a lane is empty.", false],
-      ["ex_noah", "Noah P.", "Dispatcher", 2, "2 yrs", "Operations", "Logistics", "Northline", "Freight brokerage", "51–200", false, "United States", "email", ["cancellations", "loads", "drivers"], "Reassigns a truck when a load falls off the board.", false],
-      ["ex_elena", "Elena V.", "Shipping manager", 4, "4 yrs", "Operations", "Logistics", "Fieldstone Goods", "Shipper", "201–1,000", false, "United States", "email", ["quotes", "lanes", "brokers"], "Asks brokers for rates and picks who moves the freight.", false],
+      ["ex_maya", "Maya L.", "Freight coordinator", 3, "3 yrs", "Operations", "Logistics", "Harbor Freight Desk", "Freight brokerage", "51–200", false, "United States", "email", ["carriers", "lanes", "capacity"], "Maya spends her week finding trucks for shippers who already have freight and no carrier. She keeps a short list of carriers who ran a lane before, then calls down the list when a new load appears. Most of the yeses still come back by text.", true],
+      ["ex_sam", "Sam K.", "Carrier sales", 2, "2 yrs", "Sales", "Logistics", "Redlane", "Freight brokerage", "11–50", false, "United States", "email", ["carriers", "new lanes"], "Sam sells capacity for a small brokerage. When a lane is empty he calls carriers he has used, then the ones who asked for freight last month. He writes the rate on a pad before it goes into the system.", false],
+      ["ex_noah", "Noah P.", "Dispatcher", 2, "2 yrs", "Operations", "Logistics", "Northline", "Freight brokerage", "51–200", false, "United States", "email", ["cancellations", "loads", "drivers"], "Noah watches the board for loads that fall off in the afternoon. He calls the driver first, then a backup carrier, and notes the new truck on a sheet until morning dispatch. A cancellation after 3pm usually means the load sits overnight.", false],
+      ["ex_elena", "Elena V.", "Shipping manager", 4, "4 yrs", "Operations", "Logistics", "Fieldstone Goods", "Shipper", "201–1,000", false, "United States", "email", ["quotes", "lanes", "brokers"], "Elena moves freight for a shipper with a few dozen lanes. She asks two or three brokers for a quote and compares them in a spreadsheet. She does not trust a rate that leaves out the extra fees.", false],
       ["ex_dev", "Dev R.", "Accountant", 2, "2 yrs", "Finance", "Accounting", "Hart & Co.", "Accounting firm", "11–50", false, "Canada", "linkedin", ["month-end close", "bank recs", "client chase"], "Closes the books for small business clients.", false],
       ["ex_luis", "Luis G.", "Chargeback analyst", 4, "4 yrs", "Operations", "Fintech", "Pebble Neobank", "Neobank", "201–1,000", false, "United States", "email", ["chargebacks", "disputes", "evidence"], "Handles card disputes at a neobank.", false],
       ["ex_nina", "Nina V.", "Finance ops intern", 0.5, "<1 yr", "Finance", "Software", "Paperlane", "B2B SaaS", "11–50", false, "Canada", "linkedin", ["invoices", "collections", "CRM"], "Spent a co-op in finance ops at a software company.", false],
@@ -182,6 +182,46 @@
       agent: "match",
       text: "Graded " + people.length + " example practitioners. LLM_HOOK: TL.agents.matchRequest.",
     });
+  }
+
+  function sampleAnswer(person, question) {
+    const q = String(question || "").toLowerCase();
+    const place = person.employerType || "a freight company";
+    if (/slow|hard|trust/.test(q)) return "The slow part is waiting on a callback. I keep a short list until someone confirms a truck.";
+    if (/hand|board|sheet|compare|paper/.test(q)) return "I still write it on a sheet, then copy the yes into the system at the end of the day.";
+    if (/who|call first/.test(q)) return "I call the driver I used last week, then the two carriers who run that lane.";
+    if (/quote|rate|fee/.test(q)) return "A quote that leaves out the extra fees is the one I do not trust. I ask them to resend it in one line.";
+    return "Last time I did this at " + place + ", it took most of an afternoon. I still had to check one truck by phone. I work as a " + person.role + ".";
+  }
+
+  function fillAnswers(request, pool) {
+    request.answers = request.answers || {};
+    request.passed = request.passed || [];
+    const questions = (request.screening || []).slice(0, 3);
+    (request.matches || []).filter((m) => !m.excluded && m.grade !== "X").slice(0, 6).forEach((m) => {
+      if (request.answers[m.personId]) return;
+      const who = pool.find((p) => p.id === m.personId);
+      if (!who || who.id === "ct_self") return;
+      request.answers[m.personId] = questions.map((s) => sampleAnswer(who, s));
+    });
+  }
+
+  function takerMatches(request, taker) {
+    const blob = ((taker.role || "") + " " + (taker.background || "")).toLowerCase();
+    if (/freight|broker|dispatch|ship|carrier|load|truck|logistic/.test(blob)) return true;
+    const words = blob.split(/\W+/).filter((w) => w.length > 3);
+    const hay = (request.title + " " + (request.who && request.who.role) + " " + (request.who && request.who.industry)).toLowerCase();
+    return words.some((w) => hay.indexOf(w) >= 0);
+  }
+
+  function attachTaker(state, request) {
+    const taker = state.callTaker;
+    if (!taker || !takerMatches(request, taker)) return;
+    const who = state.pool.find((p) => p.id === "ct_self");
+    if (!who) return;
+    if (!request.matches.some((m) => m.personId === "ct_self")) {
+      request.matches.unshift({ personId: "ct_self", grade: "B", score: 70, excluded: false, reasons: ["Signed up in this browser."] });
+    }
   }
 
   function seed() {
@@ -322,8 +362,10 @@
       }),
     ];
 
+    [freight, cancel, quotes].forEach((req) => fillAnswers(req, people));
+
     const state = {
-      version: 2,
+      version: 3,
       session: { role: "buyer", forceOnboarding: false },
       buyer: buyer,
       expertId: "ex_maya",
@@ -369,7 +411,7 @@
     if (!raw) return persist(seed());
     try {
       const state = JSON.parse(raw);
-      if (!state || state.version !== 2 || !state.buyer || !state.pool) return persist(seed());
+      if (!state || state.version !== 3 || !state.buyer || !state.pool) return persist(seed());
       cached = state;
       return expire(state);
     } catch (e) {
@@ -685,9 +727,130 @@
       if (error) return fail(error);
       const state = load();
       const request = blankRequest(input, state.buyer, state.pool);
+      request.screening = (request.screening || []).slice(0, 3);
+      fillAnswers(request, state.pool);
+      attachTaker(state, request);
       state.requests.unshift(request);
       persist(state);
       return { ok: true, id: request.id };
+    },
+    saveAccount: function (input) {
+      const state = load();
+      const name = clip(input.name, 80);
+      const email = clip(input.email, 120);
+      if (!name || !email) return fail("Add your name and email.");
+      state.buyer.name = name;
+      state.buyer.email = email;
+      persist(state);
+      return { ok: true };
+    },
+    saveCallTaker: function (input) {
+      const state = load();
+      const name = clip(input.name, 80);
+      const email = clip(input.email, 120);
+      const role = clip(input.role, 80);
+      const background = clip(input.background, 400);
+      if (!name || !email || !role) return fail("Add your name, email, and role.");
+      state.callTaker = { name: name, email: email, role: role, background: background };
+      let who = state.pool.find((p) => p.id === "ct_self");
+      if (!who) {
+        who = {
+          id: "ct_self",
+          example: true,
+          self: true,
+          name: name,
+          role: role,
+          years: 2,
+          yearsLabel: "2 yrs",
+          fn: "Operations",
+          industry: "Logistics",
+          employer: "Signed up here",
+          employerType: "Freight",
+          companySize: "",
+          former: false,
+          geography: "United States",
+          channel: "email",
+          topics: [],
+          wont: "Employer secrets.",
+          bio: background || role,
+          availability: ["Tue 12:00", "Thu 12:00", "Fri 09:00"],
+          timezone: "America/Toronto",
+          onboarded: true,
+          complianceAcceptedAt: new Date().toISOString(),
+        };
+        state.pool.push(who);
+      } else {
+        who.name = name;
+        who.role = role;
+        who.bio = background || role;
+      }
+      state.expertId = "ct_self";
+      state.requests.forEach((req) => attachTaker(state, req));
+      persist(state);
+      return { ok: true };
+    },
+    saveAnswers: function (requestId, personId, answers, accept) {
+      const state = load();
+      const request = requestById(state, requestId);
+      if (!request) return fail("Project not found.");
+      request.answers = request.answers || {};
+      const clean = (answers || []).map((s) => clip(s, 400)).slice(0, 3);
+      if (accept && !clean.filter(Boolean).length) return fail("Write an answer first.");
+      request.answers[personId] = clean;
+      attachTaker(state, request);
+      const now = new Date().toISOString();
+      let inv = state.invitations.find((i) => i.requestId === requestId && i.personId === personId);
+      if (!inv) {
+        inv = { id: nid("inv"), example: true, requestId: requestId, personId: personId, status: "pending", sentAt: now, respondedAt: null, complianceAt: null };
+        state.invitations.push(inv);
+      }
+      if (accept) {
+        inv.status = "accepted";
+        inv.respondedAt = now;
+        inv.complianceAt = now;
+      }
+      persist(state);
+      return { ok: true };
+    },
+    passPerson: function (requestId, personId) {
+      const state = load();
+      const request = requestById(state, requestId);
+      if (!request) return fail("Project not found.");
+      request.passed = request.passed || [];
+      if (request.passed.indexOf(personId) < 0) request.passed.push(personId);
+      persist(state);
+      return { ok: true };
+    },
+    scheduleCall: function (requestId, personId, slotIso) {
+      const state = load();
+      const request = requestById(state, requestId);
+      const who = person(state, personId);
+      if (!request || !who) return fail("Pick a person on this project.");
+      if (!slotIso) return fail("Pick a time.");
+      const existing = state.bookings.find((b) => b.requestId === requestId && b.personId === personId && b.status !== "cancelled");
+      if (existing) return { ok: true, id: existing.id };
+      const now = new Date().toISOString();
+      const booking = {
+        id: nid("book"),
+        example: true,
+        requestId: requestId,
+        requestTitle: request.title,
+        personId: personId,
+        inviteId: "",
+        slot: slotIso,
+        status: "confirmed",
+        minutes: TL.CONFIG.callMinutes,
+        recording: false,
+        rating: null,
+        notes: "",
+        summary: "",
+        chargedUsd: TL.CONFIG.pricePerCallUsd,
+        createdAt: now,
+        completedAt: null,
+      };
+      state.bookings.unshift(booking);
+      persist(state);
+      return { ok: true, id: booking.id };
     },
     saveOutreach: function (requestId, outreachId, patch) {
       const state = load();
