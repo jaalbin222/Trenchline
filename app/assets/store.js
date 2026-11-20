@@ -184,25 +184,235 @@
     });
   }
 
-  function sampleAnswer(person, question) {
+  const HAND_ANSWERS = {
+    req_freight: {
+      ex_maya: [
+        "Tuesday I needed a truck for pallets out of Columbus to Dallas. I texted two carriers who ran that lane in October, then called a third who had asked me for freight last week. He said yes at $2.10 a mile if we loaded before 4.",
+        "The rate came back in twenty minutes, but the insurance certificate was from March. I waited on their safety person until after lunch.",
+        "I wrote the rate, the pickup window, and the driver's name on a notepad, then typed it in once I knew the truck was actually empty.",
+      ],
+      ex_sam: [
+        "A customer needed three trucks out of Laredo. I called carriers who hauled our produce loads in September and offered them the same appointment window.",
+        "Two were already committed. The one who was free would not confirm until he talked to his driver, so I sat on it until 2.",
+        "I jot the MC number and the rate on a sticky before I send the rate confirmation. I typed the wrong truck once.",
+      ],
+      ex_noah: [
+        "Last Thursday a shipper called with a short-notice load to Atlanta. I had no truck there, so I checked who delivered nearby on Wednesday and called those two drivers.",
+        "One driver was out of hours. The other wanted $150 more because the dock was tight. That back-and-forth took the morning.",
+        "I keep a paper list of who is empty and where. The board never shows the driver who told me he would be in Atlanta by noon.",
+      ],
+      ex_elena: [
+        "I asked our usual broker for a Wednesday pickup in Indianapolis, then a second broker because the first number felt high. I wanted a truck that would actually show up.",
+        "The first broker took half a day to say the truck fell off. I had already told the warehouse to stage the freight.",
+        "I lined the two rates up with the fuel and the lumper fee, because the emails never list those the same way.",
+      ],
+    },
+    req_cancel: {
+      ex_maya: [
+        "A carrier cancelled a Monday pickup at 6am. The driver said the truck had a brake problem in Kentucky and could not make our dock.",
+        "I called that carrier's dispatcher, then a backup we used on the same lane in August.",
+        "I moved the load to a sticky on the monitor and crossed off the old truck number so the morning crew would not call the wrong driver.",
+      ],
+      ex_sam: [
+        "A driver cancelled after he accepted a Denver load. He said the truck was still in a shop in Amarillo.",
+        "I called him first to see if it was real, then an owner-operator who runs Denver on Fridays.",
+        "I write the cancelled load on the corner of the whiteboard until someone else covers it. If I only change the system, the night person misses it.",
+      ],
+      ex_noah: [
+        "A receiver turned away a load of tile because the appointment was for the wrong door. The driver was in the lot when the carrier pulled the truck.",
+        "I called the driver, then his fleet manager. The shipper was third, once I knew the freight was still on the trailer.",
+        "The board kept the original truck until I updated it. I write the new carrier on a card so a refresh does not wipe it.",
+      ],
+      ex_elena: [
+        "Our broker called at 4pm and said the truck for a Friday delivery had cancelled. The freight was already wrapped.",
+        "I called the broker back and asked who else they had within two hours, then I called the warehouse to hold the dock.",
+        "I track the recovery on a sheet: old carrier, new carrier, and whether the delivery day moved. The email thread gets too long.",
+      ],
+    },
+    req_quotes: {
+      ex_maya: [
+        "A shipper asked what we would charge for two pallets, Chicago to Phoenix, pickup Thursday. I checked a carrier who did that lane last month and sent $1,840 all-in.",
+        "They came back with a cheaper number that did not mention the residential fee. I could not tell if it was the same freight.",
+        "I copied the linehaul, the fuel, and the extra fees into a note. The emails never arrive in the same order.",
+      ],
+      ex_sam: [
+        "A new shipper asked for a weekly rate, Dallas to Chicago. I priced it off the last four loads we actually ran, not a spot truck I did not have.",
+        "They said another broker was cheaper. That rate was for a flexible pickup. Ours was for a set appointment. Those are not the same load.",
+        "I still subtract the fuel on paper so I can see what the truck is getting. The quote email bundles it.",
+      ],
+      ex_noah: [
+        "A customer asked what a team would cost for a same-day recovery. I asked our carrier rep and passed along $3,200.",
+        "The number changed an hour later because the team was no longer empty. I had already given the customer the first figure.",
+        "I write the quoted rate and the time I gave it on a pad. The system only stores the rate we book.",
+      ],
+      ex_elena: [
+        "I asked three brokers for a Tuesday load from our Ohio plant to a store in Charlotte. It had to be there before Friday noon.",
+        "One quote was $400 under the others and did not say if the liftgate was included. When I asked, they added it back and the gap disappeared.",
+        "I put the three quotes in a sheet with the pickup date, the transit days, and every fee they named. Otherwise I am comparing a headline rate to a real one.",
+      ],
+    },
+  };
+
+  function answerBanks(person, question) {
+    const role = String(person.role || "").toLowerCase();
     const q = String(question || "").toLowerCase();
-    const place = person.employerType || "a freight company";
-    if (/slow|hard|trust/.test(q)) return "The slow part is waiting on a callback. I keep a short list until someone confirms a truck.";
-    if (/hand|board|sheet|compare|paper/.test(q)) return "I still write it on a sheet, then copy the yes into the system at the end of the day.";
-    if (/who|call first/.test(q)) return "I call the driver I used last week, then the two carriers who run that lane.";
-    if (/quote|rate|fee/.test(q)) return "A quote that leaves out the extra fees is the one I do not trust. I ask them to resend it in one line.";
-    return "Last time I did this at " + place + ", it took most of an afternoon. I still had to check one truck by phone. I work as a " + person.role + ".";
+    const kind = /quote|rate|fee|trust|price/.test(q) ? "quote"
+      : /cancel|who did you call|call first/.test(q) ? "cancel"
+      : /hand|board|sheet|compare|paper|pad/.test(q) ? "hand"
+      : /slow|hard|wait/.test(q) ? "slow"
+      : "walk";
+    const byRole = {
+      dispatcher: {
+        walk: [
+          "A shipper called at 7 with a recovery into Atlanta. I checked who had delivered nearby the day before and called those two drivers.",
+          "The load that fell off was a morning pickup in Louisville. I looked for anyone already headed that way with space.",
+        ],
+        cancel: [
+          "I called the driver first, then his fleet manager, and only then the shipper.",
+          "The driver was my first call. His company was second, once I knew the truck was really down.",
+        ],
+        hand: [
+          "I write the new truck number on a card. The board still shows the old one until I update it.",
+          "I keep a handwritten note of who took the load so a refresh does not wipe it.",
+        ],
+        slow: [
+          "One driver was out of hours. The other wanted more money for a tight dock, and that ate the morning.",
+          "The holdup was a dock appointment that had already passed. Nobody would confirm a new window until noon.",
+        ],
+        quote: [
+          "I passed along $3,200 for a team, then had to call back an hour later because that team was no longer empty.",
+          "The first number I gave was for a solo truck. They wanted a team, and those are different rates.",
+        ],
+      },
+      sales: {
+        walk: [
+          "I called carriers who hauled our produce out of Laredo in September and offered them the same appointment.",
+          "Three trucks were needed. I started with the owner-operators who asked me for freight last month.",
+        ],
+        cancel: [
+          "I called the driver to see if the shop story was real, then someone who runs that lane on Fridays.",
+          "The carrier who cancelled was first. A backup owner-operator was second.",
+        ],
+        hand: [
+          "I jot the MC number and the rate on a sticky before I send the rate confirmation.",
+          "I still write the truck number down. I typed the wrong one once.",
+        ],
+        slow: [
+          "He would not confirm until he talked to his driver, so the load sat until 2.",
+          "Two carriers were already full. The third wanted to sleep on it.",
+        ],
+        quote: [
+          "I priced a weekly Dallas to Chicago run off the last four loads we actually moved, not a truck I did not have.",
+          "Their cheaper rate was for a flexible pickup. Mine was for a set appointment.",
+        ],
+      },
+      shipper: {
+        walk: [
+          "I asked two brokers for a Wednesday pickup in Indianapolis because the first number felt high.",
+          "I needed a truck from our Ohio plant to Charlotte before Friday noon, so I asked three brokers.",
+        ],
+        cancel: [
+          "The broker called at 4 and said the Friday truck was gone. The freight was already wrapped, so I called the warehouse to hold the dock.",
+          "I called the broker back and asked who else they had within two hours.",
+        ],
+        hand: [
+          "I line the rates up with the fuel and the lumper, because the emails never list them the same way.",
+          "I put pickup date, transit days, and every fee in a sheet. Otherwise I compare a headline rate to a real one.",
+        ],
+        slow: [
+          "They took half a day to say the truck fell off. I had already told the warehouse to stage the freight.",
+          "The cheap quote did not mention the liftgate. When they added it, the gap disappeared.",
+        ],
+        quote: [
+          "One quote was $400 under the others and left out the liftgate.",
+          "A number that skips the residential fee is the one I send back.",
+        ],
+      },
+      coordinator: {
+        walk: [
+          "I texted two carriers who ran Columbus to Dallas in October, then called a third who had asked me for freight.",
+          "I needed a truck before 4 for a pallet load. The second carrier said yes at $2.10 a mile.",
+        ],
+        cancel: [
+          "The driver called at 6am with a brake problem in Kentucky. I called his dispatcher, then a backup from August.",
+          "I crossed the old truck number off a sticky so the morning crew would not call the wrong driver.",
+        ],
+        hand: [
+          "I write the rate, the pickup window, and the driver's name on a notepad before I type them in.",
+          "The yes lives on paper until I know the truck is empty.",
+        ],
+        slow: [
+          "The rate was fast. The insurance certificate was from March, and their safety person was out until after lunch.",
+          "I had a truck and no current certificate. That was the wait.",
+        ],
+        quote: [
+          "I sent $1,840 all-in for two pallets, Chicago to Phoenix. Their other number left out the residential fee.",
+          "I copy linehaul, fuel, and extras into one note because the emails arrive in a different order.",
+        ],
+      },
+    };
+    const key = /dispatch/.test(role) ? "dispatcher"
+      : /sales|carrier/.test(role) ? "sales"
+      : /ship/.test(role) ? "shipper"
+      : "coordinator";
+    const generic = {
+      walk: [
+        "I started with the carrier who ran this lane last month, then two who had a truck nearby.",
+        "The last one was a Thursday pickup. I called until someone could make the dock before close.",
+      ],
+      cancel: [
+        "I called the driver, then the carrier, then the shipper.",
+        "The person who had the truck was my first call.",
+      ],
+      hand: [
+        "I still write the truck number down before I change it in the system.",
+        "A short list on paper is what I trust when the board is wrong.",
+      ],
+      slow: [
+        "The wait was a callback. Nothing moved until someone confirmed a truck.",
+        "They had to check with their driver, and that took the middle of the day.",
+      ],
+      quote: [
+        "I asked them to put the extra fees on the same line as the rate.",
+        "The low number was missing a fee. I sent it back.",
+      ],
+    };
+    return (byRole[key] && byRole[key][kind]) || generic[kind];
+  }
+
+  function sampleAnswer(person, question, salt, used) {
+    const bank = answerBanks(person, question);
+    let i = Math.abs(salt) % bank.length;
+    let sentence = bank[i];
+    let guard = 0;
+    while (used.has(sentence) && guard < bank.length + 2) {
+      i = (i + 1) % bank.length;
+      sentence = bank[i];
+      guard += 1;
+    }
+    if (used.has(sentence)) {
+      sentence = sentence.replace(/\.$/, "") + " That was " + String(person.name || "").split(" ")[0] + "'s load, not someone else's.";
+    }
+    used.add(sentence);
+    return sentence;
   }
 
   function fillAnswers(request, pool) {
     request.answers = request.answers || {};
     request.passed = request.passed || [];
     const questions = (request.screening || []).slice(0, 3);
-    (request.matches || []).filter((m) => !m.excluded && m.grade !== "X").slice(0, 6).forEach((m) => {
+    const hand = HAND_ANSWERS[request.id] || {};
+    const used = new Set();
+    Object.keys(hand).forEach((id) => hand[id].forEach((line) => used.add(line)));
+    (request.matches || []).filter((m) => !m.excluded && m.grade !== "X").slice(0, 6).forEach((m, personIndex) => {
       if (request.answers[m.personId]) return;
       const who = pool.find((p) => p.id === m.personId);
       if (!who || who.id === "ct_self") return;
-      request.answers[m.personId] = questions.map((s) => sampleAnswer(who, s));
+      if (hand[m.personId]) {
+        request.answers[m.personId] = hand[m.personId].slice(0, questions.length);
+        return;
+      }
+      request.answers[m.personId] = questions.map((s, i) => sampleAnswer(who, s, personIndex * 3 + i + who.role.length, used));
     });
   }
 
@@ -365,7 +575,7 @@
     [freight, cancel, quotes].forEach((req) => fillAnswers(req, people));
 
     const state = {
-      version: 4,
+      version: 5,
       session: { role: "buyer", forceOnboarding: false },
       buyer: buyer,
       expertId: "ex_maya",
@@ -411,7 +621,7 @@
     if (!raw) return persist(seed());
     try {
       const state = JSON.parse(raw);
-      if (!state || state.version !== 4 || !state.buyer || !state.pool) return persist(seed());
+      if (!state || state.version !== 5 || !state.buyer || !state.pool) return persist(seed());
       cached = state;
       return expire(state);
     } catch (e) {
