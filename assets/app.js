@@ -20,9 +20,8 @@
   const payout = window.TL && TL.CONFIG ? TL.CONFIG.expertPayoutUsd : 35;
   $$("[data-bind=price]").forEach((el) => { el.textContent = "$" + price; });
   $$("[data-bind=payout]").forEach((el) => { el.textContent = "$" + payout; });
-  const priceStat = $(".stat .v[data-count]");
-  if (priceStat) priceStat.dataset.count = String(price);
-  $$("#bars .bar").forEach((b) => { b.dataset.rate = String(price); });
+  const usBar = $("#bars .bar.us");
+  if (usBar) usBar.dataset.rate = String(price);
 
   const logos = [
     ["Fintech", "", '<path d="M11 20V6M11 9c-3 0-5 2-5 4 3 0 5-1 5-4zm0 4c3 0 5-2 5-4-3 0-5 1-5 4z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>'],
@@ -114,11 +113,14 @@
   const paint = (el) => { const p = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.setProperty("--p", p + "%"); };
   const calc = () => {
     const n = +range.value; out.textContent = n; paint(range);
+    const expert = +bars[0].dataset.rate || 1000;
+    const max = expert * n;
     bars.forEach(b => {
-      $(".fil", b).style.width = "100%";
-      $(".amt", b).textContent = "$" + price;
+      const v = +b.dataset.rate * n;
+      $(".fil", b).style.width = Math.max(1.5, (v / max) * 100) + "%";
+      $(".amt", b).textContent = fmt(v);
     });
-    if (saveOut) saveOut.textContent = "$" + price;
+    if (saveOut) saveOut.textContent = fmt((expert - price) * n);
   };
   range.addEventListener("input", calc);
   new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { calc(); o.disconnect(); } }), { threshold: .3 }).observe($("#bars"));

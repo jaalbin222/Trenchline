@@ -193,38 +193,39 @@
   <div class="wrap">
     <div class="sec-head center">
       <span class="eyebrow rv">Pricing</span>
-      <h2 class="h2 rv d1">One price. A 30-minute <em>call.</em></h2>
-      <p class="lead rv d2">Move the slider to count the calls you want. Each one stays <span data-bind="price">$50</span>.</p>
+      <h2 class="h2 rv d1">Ten calls for the price of <em>half&nbsp;an&nbsp;hour</em> with an expert network.</h2>
+      <p class="lead rv d2">Drag the slider to see what your discovery sprint would cost with each option.</p>
     </div>
     <div class="price-grid">
       <div class="calc rv">
         <div class="calc-top">
-          <div><label for="calls">Calls you want</label><div class="val"><span id="callsOut">10</span><small>calls · 30 min each</small></div></div>
+          <div><label for="calls">Discovery calls you need</label><div class="val"><span id="callsOut">10</span><small>calls · 30 min each</small></div></div>
         </div>
         <input type="range" id="calls" min="1" max="30" value="10" aria-describedby="callsOut">
         <div class="ticks"><span>1</span><span>10</span><span>20</span><span>30</span></div>
         <div class="bars" id="bars">
-          <div class="bar" data-rate="50"><div class="lbl"><b>Ask the question</b><span>What you need to learn</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$50</div></div>
-          <div class="bar" data-rate="50"><div class="lbl"><b>We find people</b><span>Who do the work</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$50</div></div>
-          <div class="bar" data-rate="50"><div class="lbl"><b>You take the call</b><span>30 minutes</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$50</div></div>
-          <div class="bar us" data-rate="50"><div class="lbl"><b>Trenchline</b><span>People doing the job</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$50</div></div>
+          <div class="bar" data-rate="1000"><div class="lbl"><b>Expert network</b><span>10+ yr execs<sup>1</sup></span></div><div class="trk"><span class="fil"></span></div><div class="amt">$0</div></div>
+          <div class="bar" data-rate="350"><div class="lbl"><b>Paid B2B interview</b><span>DIY recruiting<sup>2</sup></span></div><div class="trk"><span class="fil"></span></div><div class="amt">$0</div></div>
+          <div class="bar" data-rate="150"><div class="lbl"><b>Mentor marketplace</b><span>Advice calls<sup>3</sup></span></div><div class="trk"><span class="fil"></span></div><div class="amt">$0</div></div>
+          <div class="bar us" data-rate="50"><div class="lbl"><b>Trenchline</b><span>People doing the job</span></div><div class="trk"><span class="fil"></span></div><div class="amt">$0</div></div>
         </div>
-        <div class="save"><svg width="20" height="20" style="color:#6b5600"><use href="#i-info"/></svg><span>Each call is <b id="saveOut">$50</b>. No subscription.</span></div>
+        <div class="save"><svg width="20" height="20" style="color:#6b5600"><use href="#i-info"/></svg><span>You'd save <b id="saveOut">$9,500</b> versus an expert network.</span></div>
+        <p class="foot-src">Per-call estimates for comparison. <sup>1</sup> Expert network base rates reported on <a href="https://www.reddit.com/r/expertnetworks/comments/1q8mpxz/glg_vs_alphasights_vs_dialectica_whos_winning_in/" target="_blank" rel="noopener">r/expertnetworks</a>; industry estimates of $1,000–2,500/hr from <a href="https://nexusexpertresearch.co/blog/glg-pricing/" target="_blank" rel="noopener">this write-up</a>. <sup>2</sup> $200–500 per B2B interview (midpoint shown), <a href="https://www.reddit.com/r/startups/comments/1gj0eqk/paying_for_customer_interview_respondents/" target="_blank" rel="noopener">r/startups</a>. <sup>3</sup> From ~$150 per 30 min on mentor marketplaces.</p>
       </div>
       <aside class="plan rv d1">
-        <span class="tag">Pre-seed and seed</span>
+        <span class="tag">Founding cohort</span>
         <h3>Pay per call</h3>
         <div class="big"><span data-bind="price">$50</span><small> / 30-min call</small></div>
         <ul>
-          <li><svg><use href="#i-check"/></svg>People who do the work</li>
-          <li><svg><use href="#i-check"/></svg>We set the time</li>
-          <li><svg><use href="#i-check"/></svg>Questions about what they did</li>
-          <li><svg><use href="#i-check"/></svg>No one shows? We rebook or refund</li>
-          <li><svg><use href="#i-check"/></svg>No subscription</li>
+          <li><svg><use href="#i-check"/></svg>Hand-matched call-takers who do the role</li>
+          <li><svg><use href="#i-check"/></svg>Scheduling and reminders handled for you</li>
+          <li><svg><use href="#i-check"/></svg>Mom Test question script for your idea</li>
+          <li><svg><use href="#i-check"/></svg>No-show? We rebook or refund</li>
+          <li><svg><use href="#i-check"/></svg>No subscription, no seat fees</li>
         </ul>
-        <div class="spots"><div class="spots-h"><span>Customer discovery</span><span>One question at a time</span></div><div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
-        <a class="btn btn-hl" href="app/" data-path="founder">Open the app <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
-        <p class="fine">Paid per call</p>
+        <div class="spots"><div class="spots-h"><span>Cohort 01</span><span>5 founder spots</span></div><div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+        <a class="btn btn-hl" href="#join" data-path="founder">Claim a founder spot <svg class="ar" width="16" height="16"><use href="#i-arrow"/></svg></a>
+        <p class="fine">2-call minimum · paid upfront via Stripe</p>
       </aside>
     </div>
   </div>
@@ -233,19 +234,20 @@
 <section class="sec" id="proof" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head center">
-      <span class="eyebrow rv">What you get</span>
-      <h2 class="h2 rv d1">Hear how the work <em>actually</em> gets done.</h2>
+      <span class="eyebrow rv">Early signal <span class="ph-tag">Illustrative</span></span>
+      <h2 class="h2 rv d1">Founders get to the <em>truth</em> faster.</h2>
+      <p class="lead rv d2">Example figures and quotes. Real ones coming from our first cohort.</p>
     </div>
     <div class="stats rv">
-      <div class="stat"><div class="v" data-count="50">0</div><div class="k">Dollars per call</div></div>
-      <div class="stat"><div class="v" data-count="30">0</div><div class="k">Minutes on the call</div></div>
-      <div class="stat"><div class="v" data-count="4">0</div><div class="k">Years in the work, or less</div></div>
-      <div class="stat"><div class="v" data-count="1">0</div><div class="k">Question to start</div></div>
+      <div class="stat"><div class="v" data-count="148">0</div><div class="k">Calls booked</div></div>
+      <div class="stat"><div class="v" data-count="42">0</div><div class="k">Founders served</div></div>
+      <div class="stat"><div class="v"><span data-count="4.8" data-dec="1">0</span><small>/5</small></div><div class="k">Average call rating</div></div>
+      <div class="stat"><div class="v"><span data-count="3">0</span><small> days</small></div><div class="k">Typical time to first call</div></div>
     </div>
     <div class="tests">
-      <figure class="t rv"><div class="stars" aria-hidden="true"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"Walk me through the last invoice that got stuck, and what you did next."</p><figcaption class="who"><div class="av" style="background:#e3efe8;color:#0f5f46">AP</div><div><b>Payroll associate</b><span>Credit union</span></div></figcaption></figure>
-      <figure class="t rv d1"><div class="stars" aria-hidden="true"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"Show me the last return that took too long, from the first scan to the shelf."</p><figcaption class="who"><div class="av" style="background:#ffe9b8;color:#7a5200">WH</div><div><b>Warehouse lead</b><span>Retail</span></div></figcaption></figure>
-      <figure class="t rv d2"><div class="stars" aria-hidden="true"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"What did you check on the last site visit before you wrote the daily report?"</p><figcaption class="who"><div class="av" style="background:#e6e3f7;color:#3a2f8a">SE</div><div><b>Site engineer</b><span>Construction</span></div></figcaption></figure>
+      <figure class="t rv"><div class="stars" aria-label="Example, 5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"Two calls with AP analysts killed my first idea and handed me a better one. I'd spent a month cold-emailing CFOs for less."</p><figcaption class="who"><div class="av" style="background:#e3efe8;color:#0f5f46">PN</div><div><b>Priya N.</b><span>Example · Solo founder, fintech</span></div></figcaption></figure>
+      <figure class="t rv d1"><div class="stars" aria-label="Example, 5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"The ex-intern knew the warehouse workflow better than the VP I'd paid an expert network for. Thirty minutes and I had my wedge."</p><figcaption class="who"><div class="av" style="background:#ffe9b8;color:#7a5200">MO</div><div><b>Marcus O.</b><span>Example · Co-founder, logistics SaaS</span></div></figcaption></figure>
+      <figure class="t rv d2"><div class="stars" aria-label="Example, 5 out of 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div><p>"I took four calls in my first month. Easy money, and it's genuinely fun explaining how my job actually works."</p><figcaption class="who"><div class="av" style="background:#e6e3f7;color:#3a2f8a">JT</div><div><b>Jess T.</b><span>Example · Call-taker, junior site engineer</span></div></figcaption></figure>
     </div>
   </div>
 </section>
