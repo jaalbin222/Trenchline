@@ -49,7 +49,7 @@
       fan.style.setProperty("--py", ((e.clientY - r.top) / r.height - .5).toFixed(3));
     });
     hero.addEventListener("pointerleave", () => { fan.style.setProperty("--px", 0); fan.style.setProperty("--py", 0); });
-    $$(".hero .btn, .final .btn, .plan .btn").forEach(b => {
+    $$(".hero .ctas .btn, .final .btn, .plan .btn").forEach(b => {
       b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.translate = `${(e.clientX - r.left - r.width / 2) * .12}px ${(e.clientY - r.top - r.height / 2) * .2}px`; });
       b.addEventListener("pointerleave", () => { b.style.translate = ""; });
     });
@@ -153,6 +153,30 @@
 
   /* waitlist submit */
   const form = $("#wlForm"), msg = $("#formMsg"), card = $("#formCard");
+  const askInput = $("#q"), askForm = $("#askline");
+  const askExamples = [
+    "How do small credit unions handle chargebacks?",
+    "How do dental clinics pick scheduling software?",
+    "How do freight brokers find new carriers?",
+  ];
+  if (askInput && !reduce) {
+    let n = 0;
+    setInterval(() => {
+      if (document.activeElement === askInput || askInput.value) return;
+      n = (n + 1) % askExamples.length;
+      askInput.placeholder = askExamples[n];
+    }, 2800);
+  }
+  if (askForm && askInput) {
+    const askGo = () => {
+      const q = askInput.value.trim() || askInput.placeholder;
+      if (!q) return;
+      location.href = "app/?q=" + encodeURIComponent(q);
+    };
+    askForm.addEventListener("submit", (e) => { e.preventDefault(); askGo(); });
+    askInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); askGo(); } });
+  }
+
   form.addEventListener("submit", e => {
     e.preventDefault();
     if (!form.checkValidity()) { msg.textContent = "Add your name, a valid email, and tick the box."; form.reportValidity(); return; }
