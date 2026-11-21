@@ -60,10 +60,12 @@
       "Who does this work: " + data.get("who"),
       "Preferred tier: " + data.get("tier")
     ].join("\n");
-    location.href = "mailto:19jalbin@gmail.com?subject=" + encodeURIComponent("Trenchline brief") + "&body=" + encodeURIComponent(body);
+    const url = "https://mail.google.com/mail/?view=cm&fs=1&to=19jalbin@gmail.com&su=" + encodeURIComponent("Trenchline brief") + "&body=" + encodeURIComponent(body);
+    const opened = window.open(url, "_blank", "noopener");
+    if (!opened) location.href = url;
     if (note) {
       note.classList.add("brief-note");
-      note.textContent = "Your email app should open with the brief filled in. Send it, and we will reply.";
+      note.textContent = "Gmail should open in a new tab with the brief filled in. Send it, and we will reply.";
     }
   });
 })();
