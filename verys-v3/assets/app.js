@@ -107,39 +107,6 @@
     }
   }
 
-  /* pricing calculator */
-  const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
-  const range = $("#calls"), out = $("#callsOut"), saveOut = $("#saveOut"), bars = $$("#bars .bar");
-  const paint = (el) => { const p = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.setProperty("--p", p + "%"); };
-  const calc = () => {
-    const n = +range.value; out.textContent = n; paint(range);
-    const expert = +bars[0].dataset.rate || 1000;
-    const max = expert * n;
-    bars.forEach(b => {
-      const v = +b.dataset.rate * n;
-      $(".fil", b).style.width = Math.max(1.5, (v / max) * 100) + "%";
-      $(".amt", b).textContent = fmt(v);
-    });
-    if (saveOut) saveOut.textContent = fmt((expert - price) * n);
-  };
-  range.addEventListener("input", calc);
-  new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { calc(); o.disconnect(); } }), { threshold: .3 }).observe($("#bars"));
-  calc();
-
-  /* earnings */
-  const pm = $("#perMonth"), pmOut = $("#pmOut"), earnOut = $("#earnOut");
-  const earn = () => { pmOut.textContent = pm.value; earnOut.textContent = (pm.value * payout).toLocaleString("en-US"); paint(pm); };
-  pm.addEventListener("input", earn); earn();
-
-  /* PLACEHOLDER stats count-up */
-  const cio = new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return; cio.unobserve(e.target);
-    const el = e.target, to = +el.dataset.count, dec = +(el.dataset.dec || 0), t0 = performance.now(), d = reduce ? 0 : 1400;
-    const step = t => { const p = d ? Math.min(1, (t - t0) / d) : 1, v = to * (1 - Math.pow(1 - p, 3)); el.textContent = v.toFixed(dec); if (p < 1) requestAnimationFrame(step); };
-    requestAnimationFrame(step);
-  }), { threshold: .5 });
-  $$("[data-count]").forEach(el => cio.observe(el));
-
   /* waitlist tabs */
   const tabs = $("#tabs"), pathField = $("#pathField"), submitBtn = $("#submitBtn"), consentJr = $("#consentJr");
   const setPath = v => {
