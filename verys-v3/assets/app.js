@@ -15,25 +15,6 @@
 
   requestAnimationFrame(() => setTimeout(() => document.body.classList.add("loaded"), 60));
 
-  const whoEl = $("#who");
-  const whoSlot = $("#whoSlot");
-  const whoWords = ["people", "site engineers", "pharmacy techs", "ops managers", "dentists", "freight dispatchers"];
-  if (whoEl && whoSlot && !reduce) {
-    const mark = whoEl.querySelector("mark");
-    let i = 0;
-    const swap = () => {
-      whoEl.classList.add("is-out");
-      setTimeout(() => {
-        i = (i + 1) % whoWords.length;
-        mark.textContent = whoWords[i];
-        whoEl.classList.remove("is-out");
-        whoEl.classList.add("is-in");
-        requestAnimationFrame(() => requestAnimationFrame(() => whoEl.classList.remove("is-in")));
-      }, 280);
-    };
-    setInterval(swap, 2000);
-  }
-
   /* PLACEHOLDER: invented company wordmarks for the "Founders from" strip — not real customers */
   const price = window.TL && TL.CONFIG ? TL.CONFIG.pricePerCallUsd : 50;
   const payout = window.TL && TL.CONFIG ? TL.CONFIG.expertPayoutUsd : 35;
